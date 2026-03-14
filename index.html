@@ -1,0 +1,3608 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>QuantumShield | Future-Safe Banking</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/lucide@latest"></script>
+    
+    <!-- 3D Background Libraries -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r134/three.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/vanta@latest/dist/vanta.net.min.js"></script>
+    
+    <!-- 3D Scroll Animations Library -->
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+    <style>
+        :root {
+            --primary: #00f2ff;
+            --secondary: #7000ff;
+            --bg: #050a14;
+            --surface: #0f172a;
+            --text: #f8fafc;
+            --muted: #94a3b8;
+            --success: #10b981;
+            --warning: #f59e0b;
+            --danger: #ef4444;
+            --glass: rgba(15, 23, 42, 0.8);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Outfit', sans-serif;
+            background-color: var(--bg);
+            color: var(--text);
+            line-height: 1.6;
+            overflow-x: hidden;
+            background-image: 
+                radial-gradient(circle at 20% 30%, rgba(0, 242, 255, 0.05), transparent),
+                radial-gradient(circle at 80% 70%, rgba(112, 0, 255, 0.05), transparent);
+        }
+
+        .hero-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -2;
+            background: 
+                url('quantum_hero_background_1773398151539.png') no-repeat center center/cover,
+                var(--bg);
+            opacity: 0.15;
+            filter: saturate(1.5) contrast(1.1);
+        }
+
+        #particles-js {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+        }
+
+        #vanta-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -2;
+            pointer-events: none;
+        }
+
+        .ambient-light {
+            position: fixed;
+            width: 150vw;
+            height: 150vh;
+            top: -25%;
+            left: -25%;
+            background: radial-gradient(circle, rgba(0, 242, 255, 0.03) 0%, transparent 60%);
+            z-index: -1;
+            animation: drift 30s infinite alternate linear;
+            pointer-events: none;
+        }
+
+        @keyframes drift {
+            from { transform: translate(-5%, -5%) rotate(0deg); }
+            to { transform: translate(5%, 5%) rotate(10deg); }
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 4rem;
+            animation: fadeInDown 1s ease-out;
+        }
+
+        h1 {
+            font-size: 3.5rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 1rem;
+            letter-spacing: -1px;
+        }
+
+        p.subtitle {
+            font-size: 1.25rem;
+            color: var(--muted);
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .scanner-card {
+            background: var(--glass);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 24px;
+            padding: 3rem;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+            transition: transform 0.3s ease;
+        }
+
+        .input-group {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .threat-ticker {
+            background: rgba(239, 68, 68, 0.1);
+            color: #ffff00;
+            padding: 0.5rem 1rem;
+            font-family: monospace;
+            font-size: 0.75rem;
+            border-bottom: 1px solid rgba(239, 68, 68, 0.2);
+            overflow: hidden;
+            white-space: nowrap;
+            display: flex;
+            align-items: center;
+        }
+
+        .ticker-scroll {
+            display: inline-block;
+            animation: scroll 30s linear infinite;
+        }
+
+        @keyframes scroll {
+            0% { transform: translateX(100%); }
+            100% { transform: translateX(-100%); }
+        }
+
+        nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1.5rem 0;
+            margin-bottom: 3rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .lang-selector {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            color: white;
+            padding: 0.5rem;
+            border-radius: 8px;
+            font-size: 0.8rem;
+            cursor: pointer;
+            outline: none;
+        }
+
+        .lang-selector option { background: #0f172a; }
+
+        .rtl { direction: rtl; text-align: right; }
+        .rtl .side-nav { left: auto; right: 2rem; }
+        .rtl .history-panel { left: auto; right: -400px; border-right: none; border-left: 1px solid rgba(255, 255, 255, 0.05); }
+        .rtl .history-panel.active { right: 0; }
+
+        .status-header {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 2rem;
+            font-size: 0.9rem;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+        }
+
+        .status-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: var(--muted);
+            box-shadow: 0 0 10px var(--muted);
+        }
+
+        .status-online .status-dot {
+            background: var(--success);
+            box-shadow: 0 0 10px var(--success);
+            animation: pulse 2s infinite;
+        }
+
+        .status-offline .status-dot {
+            background: var(--warning);
+            box-shadow: 0 0 10px var(--warning);
+        }
+
+        @keyframes pulse {
+            0% { opacity: 1; }
+            50% { opacity: 0.5; }
+            100% { opacity: 1; }
+        }
+
+        input {
+            flex: 1;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            padding: 1rem 1.5rem;
+            color: white;
+            font-size: 1.1rem;
+            font-family: inherit;
+            outline: none;
+            transition: all 0.3s ease;
+        }
+
+        input:focus {
+            border-color: var(--primary);
+            background: rgba(255, 255, 255, 0.08);
+            box-shadow: 0 0 0 4px rgba(0, 242, 255, 0.1);
+        }
+
+        button {
+            padding: 1rem 2.5rem;
+            border-radius: 12px;
+            border: none;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: #000;
+            font-weight: 700;
+            font-size: 1.1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 10px 15px -3px rgba(0, 242, 255, 0.3);
+        }
+
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 20px 25px -5px rgba(0, 242, 255, 0.4);
+        }
+
+        button:active {
+            transform: translateY(0);
+        }
+
+        #results {
+            margin-top: 3rem;
+            display: none;
+        }
+
+        .result-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 1.5rem;
+            margin-top: 2rem;
+        }
+
+        .stat-box {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            border-radius: 16px;
+            padding: 1.5rem;
+            position: relative;
+            overflow: hidden;
+            transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+        }
+
+        .stat-box::before, .threat-intel-box::before {
+            content: '';
+            position: absolute;
+            top: var(--y, 50%);
+            left: var(--x, 50%);
+            width: 250px;
+            height: 250px;
+            background: radial-gradient(circle, rgba(0, 242, 255, 0.15) 0%, transparent 70%);
+            transform: translate(-50%, -50%);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        .stat-box:hover::before, .threat-intel-box:hover::before {
+            opacity: 1;
+        }
+
+        .stat-box:hover {
+            transform: translateY(-5px) scale(1.02);
+            border-color: rgba(0, 242, 255, 0.4);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.4), 0 0 20px rgba(0, 242, 255, 0.1);
+        }
+
+        .stat-box > *, .threat-intel-box > * {
+            position: relative;
+            z-index: 1;
+        }
+
+        .stat-label {
+            font-size: 0.875rem;
+            color: var(--muted);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 0.5rem;
+        }
+
+        .stat-value {
+            font-size: 1.1rem;
+            font-weight: 600;
+            word-break: break-all;
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 0.5rem 1rem;
+            border-radius: 99px;
+            font-weight: 700;
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            margin-bottom: 1rem;
+        }
+
+        .badge-safe { background: rgba(16, 185, 129, 0.2); color: var(--success); border: 1px solid var(--success); }
+        .badge-unsafe { background: rgba(239, 68, 68, 0.2); color: var(--danger); border: 1px solid var(--danger); }
+
+        /* PREMIUM TOP NAVIGATION */
+        .top-nav-wrapper {
+            position: absolute; /* Changed from fixed to stay at top of page */
+            top: 2rem;
+            left: 0;
+            width: 100%;
+            display: flex;
+            justify-content: center;
+            z-index: 5000;
+            pointer-events: none;
+        }
+
+        .top-nav {
+            pointer-events: auto;
+            display: flex;
+            align-items: center;
+            gap: 2.5rem;
+            background: rgba(15, 23, 42, 0.75);
+            backdrop-filter: blur(25px) saturate(200%);
+            padding: 0.9rem 3rem;
+            border-radius: 999px;
+            border: 1px solid rgba(0, 242, 255, 0.3);
+            box-shadow: 
+                0 15px 35px rgba(0, 0, 0, 0.6),
+                0 0 15px rgba(0, 242, 255, 0.1),
+                inset 0 0 20px rgba(0, 242, 255, 0.05);
+            position: relative;
+            overflow: hidden;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        /* Removed scroll transforms as per request */
+
+        .top-nav:hover {
+            border-color: rgba(0, 242, 255, 0.5);
+            box-shadow: 
+                0 20px 45px rgba(0, 0, 0, 0.7),
+                0 0 25px rgba(0, 242, 255, 0.2);
+        }
+
+        .top-nav::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(
+                90deg,
+                transparent,
+                rgba(0, 242, 255, 0.1),
+                transparent
+            );
+            transition: 0.5s;
+        }
+
+        .top-nav:hover::before {
+            left: 100%;
+        }
+
+        .nav-link {
+            text-decoration: none;
+            color: var(--text);
+            font-size: 0.75rem;
+            font-weight: 800;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            display: flex;
+            align-items: center;
+            gap: 0.6rem;
+            opacity: 0.8;
+            padding: 0.4rem 0.8rem;
+            border-radius: 8px;
+            position: relative;
+            transform-style: preserve-3d;
+            perspective: 400px;
+            border: 1px solid transparent;
+        }
+
+        .nav-link:hover {
+            opacity: 1;
+            color: var(--primary);
+            text-shadow: 0 0 12px rgba(0, 242, 255, 0.7);
+            transform: translateY(-3px) rotateX(8deg) scale(1.05);
+            background: rgba(0, 242, 255, 0.07);
+            border-color: rgba(0, 242, 255, 0.3);
+            box-shadow: 0 8px 20px rgba(0, 242, 255, 0.15), 0 0 0 1px rgba(0, 242, 255, 0.15);
+        }
+
+        .nav-link i {
+            font-size: 1rem;
+        }
+
+        .nav-divider {
+            width: 1px;
+            height: 20px;
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        .top-lang-selector {
+            background: transparent;
+            border: none;
+            color: var(--primary);
+            font-weight: 800;
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            cursor: pointer;
+            outline: none;
+            font-family: inherit;
+            letter-spacing: 1px;
+        }
+
+        .user-nav-profile {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            padding: 0.4rem 1rem;
+            border-left: 1px solid rgba(255,255,255,0.1);
+            border-radius: 10px;
+            transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            cursor: pointer;
+        }
+
+        .user-nav-profile:hover {
+            background: rgba(0, 242, 255, 0.07);
+            border-left-color: var(--primary);
+            box-shadow: 0 6px 20px rgba(0, 242, 255, 0.15), 0 0 0 1px rgba(0, 242, 255, 0.1);
+            transform: translateY(-3px) rotateX(6deg) scale(1.03);
+        }
+
+        /* AI Help Desk Styles */
+        .help-desk-modal {
+            position: fixed;
+            inset: 0;
+            background: rgba(2, 6, 23, 0.9);
+            backdrop-filter: blur(40px);
+            z-index: 9500;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem;
+            transition: 0.4s;
+        }
+
+        .help-desk-container {
+            width: 90%;
+            max-width: 1200px;
+            height: 80vh;
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(0, 242, 255, 0.15);
+            border-radius: 32px;
+            display: flex;
+            overflow: hidden;
+            box-shadow: 0 50px 100px rgba(0,0,0,0.6);
+            position: relative;
+        }
+
+        .help-bot-viewport {
+            flex: 1.2;
+            background: radial-gradient(circle at center, rgba(0, 242, 255, 0.05) 0%, transparent 70%);
+            position: relative;
+            border-right: 1px solid rgba(255,255,255,0.05);
+        }
+
+        .help-chat-area {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            background: rgba(0,0,0,0.2);
+        }
+
+        .chat-header {
+            padding: 2rem;
+            border-bottom: 1px solid rgba(255,255,255,0.05);
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .chat-messages {
+            flex: 1;
+            padding: 2rem;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+        }
+
+        .message {
+            max-width: 85%;
+            padding: 1rem 1.5rem;
+            border-radius: 16px;
+            font-size: 0.95rem;
+            line-height: 1.5;
+            position: relative;
+        }
+
+        .message.bot {
+            align-self: flex-start;
+            background: rgba(255, 255, 255, 0.05);
+            color: #fff;
+            border-bottom-left-radius: 4px;
+            border: 1px solid rgba(0, 242, 255, 0.1);
+        }
+
+        .message.user {
+            align-self: flex-end;
+            background: linear-gradient(135deg, var(--primary), #00a2ff);
+            color: #fff;
+            border-bottom-right-radius: 4px;
+            box-shadow: 0 10px 20px rgba(0, 242, 255, 0.2);
+        }
+
+        .chat-input-area {
+            padding: 2rem;
+            background: rgba(255,255,255,0.02);
+            border-top: 1px solid rgba(255,255,255,0.05);
+            display: flex;
+            gap: 1rem;
+        }
+
+        .chat-input {
+            flex: 1;
+            background: rgba(0,0,0,0.3);
+            border: 1px solid rgba(255,255,255,0.1);
+            color: #fff;
+            padding: 1rem 1.5rem;
+            border-radius: 12px;
+            outline: none;
+            transition: 0.3s;
+        }
+
+        .chat-input:focus { border-color: var(--primary); }
+
+        .chat-send-btn {
+            background: var(--primary);
+            color: #000;
+            border: none;
+            padding: 0 1.5rem;
+            border-radius: 12px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+        .chat-send-btn:hover { transform: scale(1.05); filter: brightness(1.1); }
+
+        .bot-typing {
+            font-size: 0.8rem;
+            color: var(--primary);
+            margin-bottom: 0.5rem;
+            display: none;
+        }
+
+        .close-help {
+            position: absolute;
+            top: 1.5rem;
+            right: 1.5rem;
+            width: 40px;
+            height: 40px;
+            background: rgba(255,255,255,0.05);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: 0.3s;
+            z-index: 10;
+        }
+
+        .close-help:hover { background: rgba(239, 68, 68, 0.2); color: var(--danger); }
+
+        .user-nav-avatar {
+            width: 34px;
+            height: 34px;
+            border-radius: 50%;
+            border: 2px solid var(--primary);
+            box-shadow: 0 0 8px rgba(0, 242, 255, 0.4);
+            transition: all 0.3s;
+            box-shadow: 0 0 18px rgba(0, 242, 255, 0.8);
+            transform: rotate(5deg);
+        }
+
+        .user-nav-name {
+            font-size: 0.7rem;
+            font-weight: 700;
+            color: white;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            transition: all 0.3s;
+        }
+
+        .user-nav-profile:hover .user-nav-name {
+            color: var(--primary);
+            text-shadow: 0 0 10px rgba(0, 242, 255, 0.5);
+        }
+
+        .history-panel {
+            position: fixed;
+            left: 0;
+            top: 100vh; /* Start off-screen bottom */
+            width: 100vw;
+            height: 100vh;
+            background: rgba(2, 6, 23, 0.95);
+            backdrop-filter: blur(40px);
+            -webkit-backdrop-filter: blur(40px);
+            z-index: 9000;
+            padding: 5rem 10% 3rem;
+            transition: all 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+            overflow-y: auto;
+            visibility: hidden;
+            opacity: 0;
+        }
+
+        .history-panel.active { 
+            top: 0; 
+            visibility: visible;
+            opacity: 1;
+        }
+
+        .history-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            gap: 2rem;
+            margin-top: 3rem;
+        }
+
+        .history-item {
+            padding: 2rem;
+            background: rgba(255, 255, 255, 0.03);
+            border-radius: 20px;
+            cursor: pointer;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .history-item::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(135deg, rgba(0, 242, 255, 0.05), transparent);
+            opacity: 0;
+            transition: 0.3s;
+        }
+
+        .history-item:hover {
+            background: rgba(255, 255, 255, 0.06);
+            border-color: rgba(0, 242, 255, 0.3);
+            transform: translateY(-8px) scale(1.02);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.4), 0 0 20px rgba(0, 242, 255, 0.1);
+        }
+
+        .history-item:hover::before {
+            opacity: 1;
+        }
+
+        .profile-card {
+            display: none;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 400px;
+            background: var(--surface);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 24px;
+            z-index: 2100;
+            padding: 3rem;
+            text-align: center;
+            box-shadow: 0 0 50px rgba(0,0,0,0.5);
+        }
+
+        .profile-avatar {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            margin: 0 auto 1.5rem;
+            padding: 4px;
+            border: 2px solid rgba(255,255,255,0.1);
+        }
+
+        .profile-avatar img {
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            object-fit: cover;
+        }
+
+        .close-btn {
+            position: absolute;
+            top: 1.5rem;
+            right: 1.5rem;
+            cursor: pointer;
+            color: var(--muted);
+        }
+
+        .overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.7);
+            z-index: 2000;
+            backdrop-filter: blur(5px);
+        }
+
+        .recommendation {
+            margin-top: 2rem;
+            padding: 2rem;
+            border-radius: 16px;
+            background: rgba(255, 255, 255, 0.02);
+            border-left: 4px solid var(--primary);
+        }
+
+        .recommendation-section {
+            margin-bottom: 2rem;
+        }
+
+        .recommendation-section:last-child {
+            margin-bottom: 0;
+        }
+
+        .recommendation-section h3 { 
+            color: var(--primary);
+            margin-bottom: 1rem; 
+            font-size: 1.25rem; 
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .recommendation-list {
+            list-style: none;
+        }
+
+        .recommendation-item {
+            display: flex;
+            gap: 0.75rem;
+            margin-bottom: 0.75rem;
+            color: var(--muted);
+            font-size: 0.95rem;
+        }
+
+        .recommendation-item::before {
+            content: '●';
+            color: var(--secondary);
+            font-size: 0.8rem;
+            margin-top: 0.2rem;
+        }
+
+        .cbom-preview {
+            margin-top: 2rem;
+            background: #000;
+            padding: 1.5rem;
+            border-radius: 12px;
+            font-family: 'Courier New', Courier, monospace;
+            font-size: 0.85rem;
+            max-height: 300px;
+            overflow-y: auto;
+            color: #10b981;
+            border: 1px solid #111;
+        }
+
+        .q-score-container {
+            text-align: center;
+            margin-bottom: 2rem;
+            padding: 2rem;
+            background: rgba(255, 255, 255, 0.03);
+            border-radius: 24px;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .q-score-gauge {
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+            background: conic-gradient(var(--primary) 0%, rgba(255, 255, 255, 0.05) 0%);
+            margin: 0 auto 1.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            box-shadow: 0 0 30px rgba(0, 242, 255, 0.1);
+            transition: all 1s ease-in-out;
+        }
+
+        .q-score-gauge::after {
+            content: '';
+            position: absolute;
+            width: 120px;
+            height: 120px;
+            background: var(--surface);
+            border-radius: 50%;
+        }
+
+        .q-score-value {
+            position: relative;
+            z-index: 10;
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: var(--primary);
+        }
+
+        /* ==================== CERTIFICATE PREVIEW CARD STYLES ==================== */
+        .cert-preview-card {
+            margin-top: 4rem;
+            background: linear-gradient(135deg, #0f1d35, #0a1525);
+            border-radius: 20px;
+            border: 1px solid rgba(200,169,81,0.3);
+            padding: 2rem;
+            display: flex;
+            gap: 2.5rem;
+            align-items: center;
+            cursor: default;
+            transition: all 0.3s;
+        }
+        .cert-preview-thumb {
+            flex-shrink: 0;
+            width: 140px;
+            height: 100px;
+            background: #fff;
+            border: 2px solid #1a3a6e;
+            border-radius: 6px;
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 8px 24px rgba(0,0,0,0.5);
+        }
+        .cert-preview-thumb::before {
+            content: '';
+            position: absolute;
+            inset: 5px;
+            border: 1px solid #1a3a6e;
+        }
+        .cert-preview-thumb-emblem {
+            font-size: 1.8rem;
+            position: relative;
+            z-index: 1;
+        }
+        .cert-preview-thumb-title {
+            font-size: 0.3rem;
+            font-family: Georgia, serif;
+            color: #1a3a6e;
+            font-weight: 700;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            text-align: center;
+            line-height: 1.4;
+            position: relative;
+            z-index: 1;
+            margin-top: 0.2rem;
+            padding: 0 0.4rem;
+        }
+        .cert-preview-thumb-line {
+            width: 70%;
+            height: 1px;
+            background: #c8a951;
+            margin: 0.35rem auto;
+        }
+        .cert-preview-thumb-status {
+            font-size: 0.25rem;
+            font-family: Georgia, serif;
+            font-weight: 700;
+            letter-spacing: 0.5px;
+            text-align: center;
+            position: relative;
+            z-index: 1;
+            padding: 0 0.4rem;
+        }
+        .cert-preview-info {
+            flex: 1;
+        }
+        .cert-preview-tag {
+            font-size: 0.65rem;
+            letter-spacing: 3px;
+            color: #c8a951;
+            text-transform: uppercase;
+            margin-bottom: 0.5rem;
+        }
+        .cert-preview-domain {
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: #fff;
+            font-family: 'Courier New', monospace;
+            margin-bottom: 0.75rem;
+        }
+        .cert-preview-meta {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 0.4rem 2rem;
+            margin-bottom: 1.5rem;
+        }
+        .cert-preview-meta-item {
+            font-size: 0.78rem;
+            color: var(--muted);
+        }
+        .cert-preview-meta-item b {
+            color: var(--text);
+            font-weight: 600;
+        }
+        .cert-view-btn {
+            background: linear-gradient(135deg, #1a3a6e, #2a5aae);
+            color: white;
+            border: none;
+            padding: 0.75rem 1.75rem;
+            border-radius: 8px;
+            font-size: 0.85rem;
+            font-weight: 700;
+            letter-spacing: 1.5px;
+            cursor: pointer;
+            transition: all 0.25s;
+            display: flex;
+            align-items: center;
+            gap: 0.6rem;
+            text-transform: uppercase;
+        }
+        .cert-view-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 24px rgba(26,58,110,0.5);
+        }
+        /* ==================== GOV CERTIFICATE MODAL ========================== */
+        .gov-cert-modal {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.92);
+            z-index: 20000;
+            align-items: flex-start;
+            justify-content: center;
+            backdrop-filter: blur(16px);
+            padding: 2rem;
+            overflow-y: auto;
+        }
+        .gov-cert-modal-inner {
+            width: 100%;
+            max-width: 820px;
+            margin: auto;
+            padding: 2rem 0;
+        }
+        .gov-cert-modal-close {
+            position: fixed;
+            top: 1.5rem;
+            right: 1.5rem;
+            width: 40px;
+            height: 40px;
+            background: rgba(255,255,255,0.1);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            font-size: 1.2rem;
+            color: white;
+            z-index: 20001;
+            transition: background 0.2s;
+        }
+        .gov-cert-modal-close:hover { background: rgba(255,255,255,0.2); }
+        /* ================================================================== */
+
+
+        .cert-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.9);
+            z-index: 10000;
+            align-items: center;
+            justify-content: center;
+            backdrop-filter: blur(15px);
+            padding: 2rem;
+        }
+
+        .cert-content {
+            background: #fff;
+            color: #1a1a1a;
+            width: 100%;
+            max-width: 800px;
+            padding: 4rem;
+            border-radius: 4px;
+            position: relative;
+            border: 20px solid #f8f8f8;
+            box-shadow: 0 50px 100px rgba(0,0,0,0.5);
+            text-align: center;
+            background-image: 
+                linear-gradient(rgba(255,255,255,0.9), rgba(255,255,255,0.9)),
+                url("https://www.transparenttextures.com/patterns/natural-paper.png");
+        }
+
+        .cert-gold {
+            background: linear-gradient(135deg, #bf953f, #fcf6ba, #b38728, #fbf5b7, #aa771c);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            font-weight: 800;
+            letter-spacing: 3px;
+            text-transform: uppercase;
+        }
+
+
+        .forensic-dossier {
+            margin-top: 3rem;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1.5rem;
+        }
+
+        /* ==================== GOVERNMENT CERTIFICATE STYLES ==================== */
+        .gov-cert-wrapper {
+            margin-top: 4rem;
+            padding: 2rem;
+            background: linear-gradient(135deg, #0f1d35, #0a1525);
+            border-radius: 12px;
+            border: 1px solid rgba(0,242,255,0.15);
+        }
+        .gov-cert-wrapper .cert-section-label {
+            font-size: 0.7rem;
+            letter-spacing: 3px;
+            color: var(--muted);
+            text-transform: uppercase;
+            margin-bottom: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+        .gov-cert-wrapper .cert-section-label::after {
+            content: '';
+            flex: 1;
+            height: 1px;
+            background: rgba(255,255,255,0.08);
+        }
+        .gov-cert {
+            font-family: 'Georgia', 'Times New Roman', serif;
+            background: #fff;
+            color: #1a1a2e;
+            border: 3px solid #1a3a6e;
+            outline: 6px solid #fff;
+            outline-offset: -10px;
+            box-shadow: 0 30px 80px rgba(0,0,0,0.6), inset 0 0 0 1px #c8d8f0;
+            padding: 3rem 3.5rem;
+            position: relative;
+            overflow: hidden;
+            print-color-adjust: exact;
+        }
+        .gov-cert::before {
+            content: '';
+            position: absolute;
+            inset: 14px;
+            border: 1.5px solid #1a3a6e;
+            pointer-events: none;
+            z-index: 0;
+        }
+        .gov-cert-watermark {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) rotate(-30deg);
+            font-size: 7rem;
+            font-weight: 900;
+            color: rgba(26, 58, 110, 0.04);
+            white-space: nowrap;
+            pointer-events: none;
+            font-family: 'Georgia', serif;
+            letter-spacing: 8px;
+            z-index: 0;
+            text-transform: uppercase;
+        }
+        .gov-cert-header {
+            text-align: center;
+            border-bottom: 2px solid #1a3a6e;
+            padding-bottom: 1.5rem;
+            margin-bottom: 1.5rem;
+            position: relative;
+            z-index: 1;
+        }
+        .gov-cert-emblem {
+            width: 72px;
+            height: 72px;
+            margin: 0 auto 1rem;
+            border-radius: 50%;
+            background: #1a3a6e;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+            color: #fff;
+            border: 3px solid #c8a951;
+            box-shadow: 0 0 0 4px rgba(200,169,81,0.2);
+        }
+        .gov-cert-ministry {
+            font-size: 0.7rem;
+            letter-spacing: 2.5px;
+            text-transform: uppercase;
+            color: #555;
+            margin-bottom: 0.25rem;
+        }
+        .gov-cert-title {
+            font-size: 1.7rem;
+            font-weight: 700;
+            color: #1a3a6e;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            margin-bottom: 0.25rem;
+        }
+        .gov-cert-subtitle {
+            font-size: 0.85rem;
+            color: #555;
+            letter-spacing: 1px;
+        }
+        .gov-cert-ref {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.72rem;
+            color: #666;
+            font-style: italic;
+            margin-bottom: 1.5rem;
+            position: relative;
+            z-index: 1;
+        }
+        .gov-cert-body {
+            position: relative;
+            z-index: 1;
+        }
+        .gov-cert-to-label {
+            font-size: 0.7rem;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            color: #888;
+            margin-bottom: 0.25rem;
+        }
+        .gov-cert-domain {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #1a3a6e;
+            border-bottom: 2px dashed #c8a951;
+            padding-bottom: 0.35rem;
+            margin-bottom: 1rem;
+            display: inline-block;
+            font-family: 'Courier New', monospace;
+        }
+        .gov-cert-statement {
+            font-size: 0.92rem;
+            color: #333;
+            line-height: 1.9;
+            margin-bottom: 1.5rem;
+        }
+        .gov-cert-details-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 0.5rem 2rem;
+            background: #f5f8ff;
+            border: 1px solid #d0dff5;
+            padding: 1.2rem 1.5rem;
+            margin-bottom: 1.5rem;
+            font-size: 0.82rem;
+        }
+        .gov-cert-details-grid div {
+            display: flex;
+            justify-content: space-between;
+            border-bottom: 1px dotted #ccc;
+            padding: 0.35rem 0;
+        }
+        .gov-cert-details-grid span:first-child {
+            color: #555;
+            font-weight: 400;
+        }
+        .gov-cert-details-grid span:last-child {
+            color: #1a3a6e;
+            font-weight: 700;
+            text-align: right;
+        }
+        .gov-cert-status-bar {
+            text-align: center;
+            padding: 0.75rem 2rem;
+            font-size: 0.9rem;
+            font-weight: 700;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            border: 2px solid;
+            margin-bottom: 1.5rem;
+            position: relative;
+            z-index: 1;
+        }
+        .gov-cert-status-bar.safe {
+            background: #f0faf5;
+            border-color: #1a7c4e;
+            color: #1a7c4e;
+        }
+        .gov-cert-status-bar.unsafe {
+            background: #fdf4f4;
+            border-color: #9b1c1c;
+            color: #9b1c1c;
+        }
+        .gov-cert-signatories {
+            display: grid;
+            grid-template-columns: 1fr auto 1fr;
+            gap: 1rem;
+            align-items: end;
+            border-top: 1.5px solid #1a3a6e;
+            padding-top: 1.5rem;
+            position: relative;
+            z-index: 1;
+        }
+        .gov-cert-sig {
+            text-align: center;
+        }
+        .gov-cert-sig-line {
+            width: 80%;
+            height: 1px;
+            background: #333;
+            margin: 0 auto 0.35rem;
+        }
+        .gov-cert-sig-name {
+            font-size: 0.72rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: #1a1a2e;
+        }
+        .gov-cert-sig-title {
+            font-size: 0.65rem;
+            color: #888;
+            margin-top: 0.1rem;
+        }
+        .gov-cert-seal {
+            width: 90px;
+            height: 90px;
+            border-radius: 50%;
+            background: #1a3a6e;
+            border: 4px solid #c8a951;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.5rem;
+            color: #fff;
+            text-align: center;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            line-height: 1.4;
+            font-weight: 700;
+            box-shadow: 0 0 0 2px rgba(200,169,81,0.3);
+        }
+        .gov-cert-footer-note {
+            text-align: center;
+            font-size: 0.65rem;
+            color: #999;
+            font-style: italic;
+            margin-top: 1rem;
+            position: relative;
+            z-index: 1;
+            border-top: 1px dotted #ddd;
+            padding-top: 0.75rem;
+        }
+        @media print {
+            .gov-cert-wrapper { background: white; border: none; }
+            .gov-cert { box-shadow: none; }
+        }
+        /* ======================================================================= */
+
+        .forensic-item {
+            padding: 1.5rem;
+            background: rgba(0, 242, 255, 0.02);
+            border: 1px solid rgba(0, 242, 255, 0.1);
+            border-radius: 12px;
+        }
+
+        .forensic-label { font-size: 0.75rem; color: var(--muted); text-transform: uppercase; margin-bottom: 0.5rem; }
+        .forensic-text { font-size: 0.95rem; color: #fff; font-weight: 600; }
+
+        /* CRYPTO INVENTORY STYLES */
+        .inventory-panel {
+            margin-top: 3rem;
+            background: rgba(15, 23, 42, 0.4);
+            border-radius: 20px;
+            border: 1px solid rgba(0, 242, 255, 0.1);
+            overflow: hidden;
+        }
+
+        .inventory-header {
+            background: rgba(0, 242, 255, 0.05);
+            padding: 1.5rem 2rem;
+            border-bottom: 1px solid rgba(0, 242, 255, 0.1);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .inventory-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .inventory-table th {
+            text-align: left;
+            padding: 1.2rem 2rem;
+            font-size: 0.75rem;
+            color: var(--muted);
+            text-transform: uppercase;
+            border-bottom: 1px solid rgba(255,255,255,0.05);
+        }
+
+        .inventory-table td {
+            padding: 1.2rem 2rem;
+            font-size: 0.9rem;
+            border-bottom: 1px solid rgba(255,255,255,0.05);
+        }
+
+        .asset-tag {
+            padding: 0.25rem 0.75rem;
+            border-radius: 6px;
+            font-size: 0.75rem;
+            font-weight: 700;
+        }
+
+        .safety-indicator {
+            padding: 2.5rem;
+            border-radius: 24px;
+            margin-top: 2rem;
+            text-align: center;
+            border: 2px solid transparent;
+            transition: all 0.5s;
+        }
+
+        .safety-safe {
+            background: rgba(16, 185, 129, 0.05);
+            border-color: var(--success);
+            box-shadow: 0 0 50px rgba(16, 185, 129, 0.1);
+        }
+
+        .safety-unsafe {
+            background: rgba(239, 68, 68, 0.05);
+            border-color: var(--danger);
+            box-shadow: 0 0 50px rgba(239, 68, 68, 0.1);
+        }
+
+        .threat-intel-box {
+            margin-top: 3rem;
+            padding: 2.5rem;
+            background: rgba(255, 255, 255, 0.02);
+            border-radius: 24px;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            display: grid;
+            grid-template-columns: 1fr 1.5fr;
+            gap: 2rem;
+            align-items: center;
+        }
+
+        .threat-map-simulation {
+            aspect-ratio: 16/9;
+            background: url("https://www.transparenttextures.com/patterns/carbon-fibre.png"), linear-gradient(135deg, #0f172a, #020617);
+            border-radius: 16px;
+            position: relative;
+            overflow: hidden;
+            border: 1px solid rgba(0, 242, 255, 0.1);
+        }
+
+        .map-marker {
+            position: absolute;
+            width: 12px;
+            height: 12px;
+            background: var(--primary);
+            border-radius: 50%;
+            top: 40%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            box-shadow: 0 0 20px var(--primary);
+            animation: ping 2s infinite;
+        }
+
+        @keyframes ping {
+            0% { transform: translate(-50%, -50%) scale(1); opacity: 1; }
+            100% { transform: translate(-50%, -50%) scale(4); opacity: 0; }
+        }
+
+        .threat-factor-tag {
+            background: rgba(239, 68, 68, 0.1);
+            color: var(--danger);
+            border: 1px solid rgba(239, 68, 68, 0.2);
+            padding: 0.3rem 0.8rem;
+            border-radius: 6px;
+            font-size: 0.8rem;
+            margin-right: 0.5rem;
+            margin-bottom: 0.5rem;
+            display: inline-block;
+        }
+
+        .intrusion-alert {
+            display: none;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 450px;
+            background: rgba(239, 68, 68, 0.95);
+            color: white;
+            padding: 3rem;
+            border-radius: 12px;
+            z-index: 2000;
+            text-align: center;
+            border: 4px solid #fff;
+            box-shadow: 0 0 100px #ef4444;
+            animation: glitch 0.2s infinite;
+        }
+
+        /* INNOVATION SHOWCASE STYLES */
+        .innovation-container {
+            margin-top: 4rem;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 4rem;
+            align-items: center;
+            background: var(--glass);
+            padding: 4rem;
+            border-radius: 32px;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            box-shadow: 0 50px 100px rgba(0,0,0,0.5);
+            animation: fadeInUp 1s ease-out;
+        }
+
+        .innovation-image-wrapper {
+            position: relative;
+            border-radius: 20px;
+            overflow: hidden;
+            border: 1px solid rgba(0, 242, 255, 0.2);
+            box-shadow: 0 0 40px rgba(0, 242, 255, 0.1);
+        }
+
+        .innovation-image-wrapper img {
+            width: 100%;
+            height: auto;
+            display: block;
+            transition: transform 0.8s ease;
+        }
+
+        .innovation-image-wrapper:hover img {
+            transform: scale(1.05);
+        }
+
+        .innovation-info h2 {
+            font-size: 2.5rem;
+            margin-bottom: 1.5rem;
+            background: linear-gradient(135deg, white, var(--primary));
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .innovation-info p {
+            color: var(--muted);
+            font-size: 1.1rem;
+            margin-bottom: 2rem;
+            line-height: 1.8;
+        }
+
+        .feature-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1.5rem;
+        }
+
+        .feature-item {
+            background: rgba(255,255,255,0.03);
+            padding: 1.5rem;
+            border-radius: 16px;
+            border: 1px solid rgba(255,255,255,0.05);
+            transition: all 0.3s;
+        }
+
+        .feature-item:hover {
+            background: rgba(0, 242, 255, 0.05);
+            border-color: var(--primary);
+            transform: translateY(-5px);
+        }
+
+        .feature-icon {
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .feature-item h3 {
+            font-size: 1rem;
+            margin-bottom: 0.5rem;
+            color: var(--primary);
+        }
+
+        .feature-item p {
+            font-size: 0.85rem;
+            margin-bottom: 0;
+            line-height: 1.4;
+        }
+
+        /* DIGILOCKER INTEGRATION */
+        .digilocker-badge {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(0, 242, 255, 0.2);
+            padding: 0.8rem 1.5rem;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-top: 1rem;
+            transition: all 0.3s;
+            cursor: pointer;
+        }
+
+        .digilocker-badge:hover {
+            background: rgba(0, 242, 255, 0.08);
+            border-color: var(--primary);
+            transform: scale(1.02);
+        }
+
+        .digilocker-logo {
+            width: 30px;
+            height: 30px;
+            background: white;
+            padding: 2px;
+            border-radius: 4px;
+        }
+
+        .digilocker-btn {
+            background: #fff;
+            color: #1a1a1a;
+            border: 1px solid #ddd;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.75rem;
+            font-size: 0.9rem;
+            font-weight: 700;
+            margin-top: 1.5rem;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+
+        .digilocker-btn img {
+            height: 20px;
+        }
+
+        /* AUTH PAGE STYLES */
+        .auth-root {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: #0d1117;
+            z-index: 10000;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            overflow: hidden;
+        }
+
+        .auth-spotlight {
+            position: absolute;
+            top: -10%;
+            left: -10%;
+            width: 60%;
+            height: 80%;
+            background: radial-gradient(circle at 0% 0%, rgba(255, 255, 255, 0.1) 0%, transparent 70%);
+            transform: rotate(-15deg);
+            pointer-events: none;
+        }
+
+        .auth-content {
+            text-align: center;
+            z-index: 10;
+            width: 100%;
+            max-width: 450px;
+            padding: 2rem;
+        }
+
+        .auth-title {
+            font-family: 'Times New Roman', serif;
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+            line-height: 1.2;
+        }
+
+        .auth-subtitle {
+            font-size: 1rem;
+            color: rgba(255,255,255,0.7);
+            margin-bottom: 3rem;
+            letter-spacing: 1px;
+        }
+
+        .auth-card {
+            background: rgba(255, 255, 255, 0.04);
+            backdrop-filter: blur(30px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 12px;
+            padding: 2.5rem;
+            width: 100%;
+            box-shadow: 0 40px 100px rgba(0,0,0,0.8);
+        }
+
+        .auth-card h2 {
+            font-size: 1.8rem;
+            margin-bottom: 2rem;
+            font-family: 'Times New Roman', serif;
+            letter-spacing: 1px;
+        }
+
+        .auth-field {
+            text-align: left;
+            margin-bottom: 1.2rem;
+        }
+
+        .auth-field label {
+            display: block;
+            font-size: 0.75rem;
+            font-weight: 600;
+            color: rgba(255,255,255,0.5);
+            margin-bottom: 0.4rem;
+        }
+
+        .auth-input {
+            width: 100%;
+            background: rgba(255, 255, 255, 0.95);
+            border: none;
+            padding: 0.9rem 1rem;
+            border-radius: 6px;
+            color: #111;
+            font-size: 0.95rem;
+            font-family: inherit;
+        }
+
+        .auth-options {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 0.75rem;
+            margin: 1.5rem 0 2rem;
+            color: rgba(255,255,255,0.8);
+        }
+
+        .auth-btn {
+            width: 100%;
+            background: #00d2ff;
+            color: #000;
+            border: none;
+            padding: 1rem;
+            border-radius: 6px;
+            font-weight: 800;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .auth-btn:hover {
+            background: #00f2ff;
+            box-shadow: 0 0 30px rgba(0, 242, 255, 0.5);
+            transform: scale(1.02);
+        }
+
+        .auth-btn-secondary {
+            width: 100%;
+            background: transparent;
+            color: #00d2ff;
+            border: 1px solid rgba(0, 210, 255, 0.3);
+            padding: 0.9rem;
+            border-radius: 6px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-size: 0.8rem;
+            margin-top: 1rem;
+        }
+
+        .auth-btn-secondary:hover {
+            background: rgba(0, 210, 255, 0.05);
+            border-color: #00d2ff;
+        }
+
+        .auth-footer {
+            margin-top: 2rem;
+            font-size: 0.85rem;
+            color: rgba(255,255,255,0.5);
+        }
+
+        .auth-footer a {
+            color: #00d2ff;
+            text-decoration: none;
+            font-weight: 700;
+        }
+
+        .alert-header {
+            font-size: 2.5rem;
+            font-weight: 800;
+            margin-bottom: 1rem;
+            letter-spacing: 5px;
+        }
+
+        @keyframes glitch {
+            0% { transform: translate(-50.5%, -50%) skew(2deg); opacity: 1; }
+            50% { transform: translate(-49.5%, -51%) skew(-2deg); opacity: 0.8; }
+            100% { transform: translate(-50%, -49%) skew(0deg); opacity: 1; }
+        }
+
+        .loader {
+            display: none;
+            width: 48px;
+            height: 48px;
+            border: 5px solid #FFF;
+            border-bottom-color: var(--primary);
+            border-radius: 50%;
+            margin: 2rem auto;
+            animation: rotation 1s linear infinite;
+        }
+
+        @keyframes rotation { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+        @keyframes fadeInDown { from { opacity: 0; transform: translateY(-30px); } to { opacity: 1; transform: translateY(0); } }
+
+        .cert-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.9);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+            backdrop-filter: blur(20px);
+        }
+
+        .cert-content {
+            background: #fff;
+            color: #111;
+            padding: 4rem;
+            border-radius: 4px;
+            max-width: 800px;
+            width: 90%;
+            position: relative;
+            box-shadow: 0 0 100px rgba(0, 242, 255, 0.3);
+            font-family: 'Times New Roman', serif;
+            text-align: center;
+            border: 15px solid #111;
+            outline: 2px solid gold;
+            outline-offset: -10px;
+        }
+
+        .cert-gold { color: #856404; font-weight: 700; text-transform: uppercase; letter-spacing: 2px; }
+
+        .service-discovery-tag {
+            background: rgba(255,255,255,0.1);
+            border: 1px solid rgba(255,255,255,0.2);
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
+            font-size: 0.9rem;
+            color: var(--primary);
+            margin-bottom: 2rem;
+            display: inline-block;
+        }
+        .google-btn {
+            background: white !important;
+            color: #111 !important;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 1rem;
+            margin-top: 1rem;
+            border: 1px solid #ddd !important;
+        }
+
+        .google-btn:hover {
+            background: #f8f8f8 !important;
+            box-shadow: 0 0 20px rgba(255,255,255,0.2) !important;
+        }
+
+        @keyframes spin {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
+        /* Partner Login Grid */
+        .partner-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+            margin-top: 1.5rem;
+        }
+
+        .partner-btn {
+            background: rgba(255, 255, 255, 0.03) !important;
+            border: 1px solid rgba(255, 255, 255, 0.1) !important;
+            color: #fff !important;
+            padding: 0.8rem 0.5rem !important;
+            border-radius: 10px !important;
+            display: flex !important;
+            flex-direction: column !important;
+            align-items: center !important;
+            justify-content: center !important;
+            gap: 0.6rem !important;
+            font-size: 0.7rem !important;
+            font-weight: 600 !important;
+            letter-spacing: 1px !important;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+            box-shadow: none !important;
+            height: auto !important;
+        }
+
+        .partner-btn:hover {
+            background: rgba(255, 255, 255, 0.08) !important;
+            border-color: var(--primary) !important;
+            transform: translateY(-3px) !important;
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.4) !important;
+        }
+
+        .partner-btn svg, .partner-btn img {
+            width: 24px;
+            height: 24px;
+            transition: transform 0.3s ease;
+        }
+
+        .partner-btn:hover svg, .partner-btn:hover img {
+            transform: scale(1.15);
+        }
+
+        .partner-btn.dl { color: #fff !important; }
+        .partner-btn.google { color: #fff !important; }
+    </style>
+</head>
+<body style="background: #050a14;">
+    <div id="vanta-bg"></div>
+    <div id="auth-root" class="auth-root">
+        <div class="auth-spotlight"></div>
+        <div class="auth-content">
+            <h1 class="auth-title">Unlock a world of endless entertainment</h1>
+            <p class="auth-subtitle">Login to Discover, Stream, and Enjoy!</p>
+            
+            <div class="auth-card">
+                <h2 style="text-transform: uppercase; font-size: 1.5rem;">Sign in</h2>
+                <div class="auth-field">
+                    <label style="text-transform: uppercase;">Email</label>
+                    <input type="email" id="auth-email" class="auth-input" placeholder="example.email@gmail.com">
+                </div>
+                <div class="auth-field">
+                    <label style="text-transform: uppercase;">Password</label>
+                    <input type="password" id="auth-pass" class="auth-input" placeholder="Enter at least 8+ characters">
+                </div>
+                
+                <div class="auth-options">
+                    <label style="display: flex; align-items: center; gap: 0.5rem; cursor: pointer; text-transform: uppercase; font-size: 0.7rem; opacity: 0.7;">
+                        <input type="checkbox" checked> Remember me
+                    </label>
+                    <a href="#" style="color: white; text-decoration: none; font-weight: 700; letter-spacing: 0.5px;">FORGOT PASSWORD?</a>
+                </div>
+                
+                <button class="auth-btn" onclick="handleAuth()">SIGN IN</button>
+                <button class="auth-btn-secondary" onclick="handleOTPLogin()">LOGIN WITH OTP</button>
+                               <div style="margin: 2rem 0 1.5rem; display: flex; align-items: center; gap: 1rem;">
+                    <div style="flex: 1; height: 1px; background: linear-gradient(to right, transparent, rgba(255,255,255,0.2));"></div>
+                    <span style="font-size: 0.65rem; color: rgba(255,255,255,0.4); font-weight: 800; letter-spacing: 2px;">SECURE GLOBAL ACCESS</span>
+                    <div style="flex: 1; height: 1px; background: linear-gradient(to left, transparent, rgba(255,255,255,0.2));"></div>
+                </div>
+
+                <div class="partner-grid">
+                    <button class="partner-btn dl" onclick="handleDigiLockerAuth()">
+                        <img src="https://www.digilocker.gov.in/assets/img/digilocker_logo.png" style="background: white; padding: 2px; border-radius: 4px;" alt="DL">
+                        DIGILOCKER
+                    </button>
+
+                    <button class="partner-btn google" onclick="handleGoogleAuth()">
+                        <svg viewBox="0 0 24 24">
+                            <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
+                            <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
+                            <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l3.66-2.84z"/>
+                            <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/>
+                        </svg>
+                        GOOGLE
+                    </button>
+                </div>
+                
+                <div class="auth-footer" style="text-transform: uppercase; letter-spacing: 1px; font-size: 0.75rem;">
+                    New to QuantumShield? <a href="#" onclick="toggleAuthMode()" id="auth-toggle-link" style="text-decoration: underline;">Signup now</a>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div id="dashboard-root" style="display: none;">
+        <div id="intrusionAlert" class="intrusion-alert">
+            <div class="alert-header">⚠️ WARNING</div>
+            <h2 style="margin-bottom: 1rem;">FIREWALL BREACH ATTEMPTED</h2>
+            <p id="intrusion-msg" style="font-size: 1.1rem; margin-bottom: 2rem;">Hostile pattern detected in system memory.</p>
+            <div style="font-family: monospace; background: rgba(0,0,0,0.3); padding: 1rem; margin-bottom: 2rem;">
+                IP_TRACKING: ACTIVE<br>
+                SECURITY_LOG: UPLOADED<br>
+                THREAT_LEVEL: CRITICAL
+            </div>
+            <button onclick="dismissAlert()" style="background: #fff; color: #ef4444; width: 100%;">RE-ENGAGE FIREWALL</button>
+        </div>
+
+    <div id="certModal" class="cert-modal" onclick="closeCert()">
+        <div class="cert-content" onclick="event.stopPropagation()">
+            <div class="cert-gold" style="font-size: 1.5rem; margin-bottom: 2rem;">Post-Quantum Cryptography (PQC) Ready</div>
+            <h1 style="color: #111; background: none; -webkit-text-fill-color: #111; font-size: 2.5rem; margin-bottom: 1rem;">CERTIFICATE OF ASSURANCE</h1>
+            <p style="font-size: 1.2rem; margin-bottom: 2rem;">This document serves as immediate assurance that the endpoint</p>
+            <h2 id="cert-endpoint" style="color: var(--secondary); margin-bottom: 1rem; font-family: 'Outfit';"></h2>
+            <p style="font-size: 1.1rem; margin-bottom: 2rem;">is verified as <b style="color: var(--success);">FULLY QUANTUM SAFE</b> and shielded against future cryptanalytic threats including "Harvest Now, Decrypt Later" (HNDL) attacks.</p>
+            <div style="border-top: 2px solid #eee; padding-top: 2rem; display: flex; justify-content: space-around;">
+                <div style="text-align: left;">
+                    <div style="font-size: 0.8rem; color: #666;">ALGORITHM</div>
+                    <div id="cert-alg" style="font-weight: 700;"></div>
+                </div>
+                <div style="text-align: left;">
+                    <div style="font-size: 0.8rem; color: #666;">ISSUED BY</div>
+                    <div style="font-weight: 700;">QuantumShield Engine v2</div>
+                </div>
+            </div>
+            
+            <div style="margin-top: 2rem; display: flex; gap: 1rem; justify-content: center;">
+                <button onclick="saveToDigiLocker()" style="background: #2c3e50; color: white; display: flex; align-items: center; gap: 0.5rem; padding: 0.75rem 1.5rem;">
+                    <img src="https://www.digilocker.gov.in/assets/img/digilocker_logo.png" style="height: 18px; filter: brightness(0) invert(1);" alt="DL">
+                    SAVE TO DIGILOCKER
+                </button>
+                <button onclick="closeCert()" style="background: #111; color: white; padding: 0.75rem 2rem;">CLOSE</button>
+            </div>
+        </div>
+    </div>
+    
+    <div class="hero-bg"></div>
+    <div id="particles-js"></div>
+    <div class="ambient-light"></div>
+
+    <div class="top-nav-wrapper">
+        <nav class="top-nav">
+            <div class="nav-link" onclick="showHome()">
+                <i data-lucide="home" style="width: 18px; height: 18px;"></i>
+                <span>HOME</span>
+            </div>
+            <div class="nav-divider"></div>
+            <div class="nav-link" onclick="showDashboard()">
+                <i data-lucide="layout-dashboard" style="width: 18px; height: 18px;"></i>
+                <span>DASHBOARD</span>
+            </div>
+            <div class="nav-divider"></div>
+            <div class="nav-link" onclick="toggleHistory()">
+                <i data-lucide="history" style="width: 18px; height: 18px;"></i>
+                <span>HISTORY</span>
+            </div>
+            <div class="nav-divider"></div>
+            <div class="nav-link">
+                <i data-lucide="languages" style="width: 18px; height: 18px; color: var(--primary);"></i>
+                <select class="top-lang-selector" onchange="changeLanguage(this.value)">
+                    <option value="en">LANGUAGE: EN</option>
+                    <option value="hi">LANGUAGE: HI</option>
+                    <option value="mr">LANGUAGE: MR</option>
+                    <option value="bn">LANGUAGE: BN</option>
+                    <option value="ar">LANGUAGE: AR</option>
+                    <option value="es">LANGUAGE: ES</option>
+                </select>
+            </div>
+            <div class="nav-divider"></div>
+            <div class="nav-link" onclick="toggleHelpDesk()">
+                <i data-lucide="help-circle" style="width: 18px; height: 18px; color: var(--warning);"></i>
+                <span style="color: var(--warning);">EXPLORE AI HELP</span>
+            </div>
+            <div class="nav-divider"></div>
+            <div class="nav-link" onclick="handleLogout()">
+                <i data-lucide="log-out" style="width: 18px; height: 18px; color: var(--danger);"></i>
+                <span style="color: var(--danger);">LOGOUT</span>
+            </div>
+            <div class="user-nav-profile" onclick="toggleProfile()" style="cursor: pointer;">
+                <img src="https://ui-avatars.com/api/?name=User&background=00f2ff&color=020617" id="nav-user-avatar" class="user-nav-avatar" alt="User">
+                <span id="nav-user-name" class="user-nav-name">RISZSEASXH</span>
+            </div>
+        </nav>
+    </div>
+
+    <div id="historyPanel" class="history-panel">
+        <div style="max-width: 1400px; margin: 0 auto;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 3rem;">
+                <div>
+                    <h1 style="font-size: 3rem; margin-bottom: 0.5rem; background: linear-gradient(135deg, #fff, var(--primary)); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent;">Audit Intelligence Archive</h1>
+                    <p style="color: var(--muted); font-size: 1.1rem;">Access historical cryptographic compliance reports and CBOM data.</p>
+                </div>
+                <div onclick="toggleHistory()" style="cursor: pointer; font-size: 2rem; width: 60px; height: 60px; background: rgba(255,255,255,0.05); border-radius: 50%; display: flex; align-items: center; justify-content: center; transition: 0.3s;" onmouseover="this.style.background='rgba(255,255,255,0.1)'" onmouseout="this.style.background='rgba(255,255,255,0.05)'">✕</div>
+            </div>
+            
+            <div id="historyList" class="history-grid"></div>
+        </div>
+    </div>
+
+    <div id="helpDeskModal" class="help-desk-modal">
+        <div class="help-desk-container" data-aos="zoom-in">
+            <div class="close-help" onclick="toggleHelpDesk()">✕</div>
+            
+            <div class="help-bot-viewport">
+                <div id="bot-canvas-container" style="width: 100%; height: 100%;"></div>
+                <div style="position: absolute; bottom: 2rem; left: 2rem; border-left: 2px solid var(--primary); padding-left: 1rem;">
+                    <div style="color: var(--primary); font-weight: 800; font-size: 0.75rem; letter-spacing: 2px;">NEURAL_BOT v4.0</div>
+                    <div style="color: var(--muted); font-size: 0.65rem;">QUANTUM-SAFE ENCRYPTED CHANNEL</div>
+                </div>
+            </div>
+
+            <div class="help-chat-area">
+                <div class="chat-header">
+                    <div style="width: 40px; height: 40px; background: rgba(0, 242, 255, 0.1); border-radius: 50%; display: flex; align-items: center; justify-content: center; border: 1px solid var(--primary);">🤖</div>
+                    <div>
+                        <div style="font-weight: 700; font-size: 1.1rem; color: #fff;">QuantumShield AI Support</div>
+                        <div style="font-size: 0.75rem; color: var(--success);">Online & Listening</div>
+                    </div>
+                </div>
+
+                <div class="chat-messages" id="help-chat-messages">
+                    <div class="message bot">
+                        Greetings. I am the QuantumShield Neural Assistant. How may I secure your understanding today?
+                    </div>
+                </div>
+
+                <div id="bot-typing-indicator" class="bot-typing" style="padding: 0 2rem;">Bot is thinking...</div>
+
+                <div class="chat-input-area">
+                    <input type="text" id="help-chat-input" class="chat-input" placeholder="Ask about Q-Score, HNDL, or CBOM..." onkeypress="if(event.key==='Enter') sendHelpMessage()">
+                    <button class="chat-send-btn" onclick="sendHelpMessage()">SEND</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="overlay" class="overlay" onclick="closeModals()"></div>
+
+    <div id="profileCard" class="profile-card">
+        <div class="close-btn" onclick="toggleProfile()">✕</div>
+        <div class="profile-avatar">
+            <img src="https://ui-avatars.com/api/?name=Quantum+Expert&background=00f2ff&color=020617" alt="Profile">
+        </div>
+        <h2 style="margin-bottom: 0.5rem;" data-i18n="profile_title">Quantum Security Lead</h2>
+        <p style="color: var(--muted); margin-bottom: 2rem;">Verification ID: QS-8829-X</p>
+        
+        <div style="text-align: left; background: rgba(255,255,255,0.02); padding: 1.5rem; border-radius: 12px; margin-bottom: 2rem;">
+            <div style="margin-bottom: 1rem;">
+                <div class="stat-label" data-i18n="clearance_label">Security Clearance</div>
+                <div style="color: var(--primary); font-weight: bold;">Level 5 (Top Secret)</div>
+            </div>
+            <div style="margin-bottom: 1rem;">
+                <div class="stat-label" data-i18n="verified_scans">Verified Scans</div>
+                <div id="profile-scan-count" style="color: #fff; font-weight: bold;">0</div>
+            </div>
+            <div>
+                <div class="stat-label" data-i18n="verified_certs">Verified Certifications Issued</div>
+                <div id="profile-cert-count" style="color: #fff; font-weight: bold;">0</div>
+            </div>
+        </div>
+        <button onclick="toggleProfile()" style="width: 100%;" data-i18n="close_portal">CLOSE PORTAL</button>
+    </div>
+
+    <div class="threat-ticker">
+        <div style="background: var(--danger); color: white; padding: 2px 8px; margin-right: 15px; font-weight: bold;" data-i18n="threat_feed_live">LIVE THREAT FEED</div>
+        <div class="ticker-scroll" id="threat-ticker-text">
+            [03:14:22] HNDL NODE DETECTED IN B-REGION... [03:15:01] BRUTE-FORCE ATTEMPT ON NIST-P256 REPOSITORY BLOCKED... [03:15:45] CRITICAL VULNERABILITY: ML-KEM PRE-STANDARD DEPLOYMENT DETECTED...
+        </div>
+    </div>
+
+        <div id="home-content">
+            <div class="container" style="padding-top: 150px;">
+                <header>
+                    <div id="connection-status" class="status-header status-offline">
+                        <div class="status-dot"></div>
+                        <span id="status-text" data-i18n="engine_checking">Intelligence Engine: Checking...</span>
+                    </div>
+                    <h1 data-i18n="app_title">QuantumShield</h1>
+                    <p class="subtitle" data-i18n="app_subtitle">Future-Safe Banking Solutions: Audit, Discover, and Secure your infrastructure against Post-Quantum threats.</p>
+                </header>
+
+                <div class="innovation-container">
+                    <div class="innovation-image-wrapper">
+                        <img src="quantum_innovation_showcase_1773407795289.png" alt="Quantum Innovation">
+                    </div>
+                    <div class="innovation-info">
+                        <h2>Advanced Quantum-Safe Intelligence</h2>
+                        <p>Welcome to the next generation of cryptographic resilience. QuantumShield v2.4 introduces deep-learning neural models to predict and neutralize quantum threats before they impact your financial ecosystem.</p>
+                        <div class="feature-grid">
+                            <div class="feature-item">
+                                <div class="feature-icon">🧠</div>
+                                <h3>Neural Auditing</h3>
+                                <p>Deep analysis of endpoint vulnerabilities using PQC-aware intelligence.</p>
+                            </div>
+                            <div class="feature-item">
+                                <div class="feature-icon">🛡️</div>
+                                <h3>HNDL Shielding</h3>
+                                <p>Predictive protection against "Harvest Now, Decrypt Later" vector attacks.</p>
+                            </div>
+                            <div class="feature-item">
+                                <div class="feature-icon">⛓️</div>
+                                <h3>Hybrid-Chain</h3>
+                                <p>Dual-layer security combining classical RSA with NIST-standard Kyber.</p>
+                            </div>
+                            <div class="feature-item">
+                                <div class="feature-icon">🌐</div>
+                                <h3>Global Mapping</h3>
+                                <p>Real-time tracking of adversarial quantum computed threats globally.</p>
+                            </div>
+                        </div>
+                        
+                        <div class="digilocker-badge" onclick="window.open('https://www.digilocker.gov.in/', '_blank')">
+                            <img src="https://www.digilocker.gov.in/assets/img/digilocker_logo.png" class="digilocker-logo" alt="DL">
+                            <div>
+                                <div style="font-weight: 700; font-size: 0.9rem; color: white;">Strategic Synergy With DigiLocker</div>
+                                <div style="font-size: 0.75rem; color: var(--muted);">Direct PQC-ready document verification & vaulting.</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <main class="scanner-card" style="margin-top: 4rem;">
+                    <div class="input-group">
+                        <input type="text" id="target" placeholder="Enter endpoint (e.g. secure.bank.com)" value="google.com" data-i18n-holder="input_placeholder">
+                        <button onclick="startScan()" data-i18n="btn_audit">INITIATE AUDIT</button>
+                    </div>
+
+                    <div class="loader" id="loader"></div>
+                    <div id="error" class="error-msg"></div>
+                </main>
+            </div>
+        </div>
+
+        <div id="dashboard-content" style="display: none; padding-top: 150px;">
+            <div class="container">
+                <div id="no-audit-placeholder" style="text-align: center; padding: 5rem; background: rgba(255,255,255,0.02); border-radius: 32px; border: 1px dashed rgba(255,255,255,0.1);">
+                    <div style="font-size: 4rem; margin-bottom: 2rem; opacity: 0.3;">🕵️‍♂️</div>
+                    <h2 style="color: var(--muted); margin-bottom: 1rem;">ACTIVE WORKSPACE IDLE</h2>
+                    <p style="color: var(--muted); max-width: 400px; margin: 0 auto;">No active audit found. Please return to <b>HOME</b> to initiate a new cryptographic discovery scan.</p>
+                    <button onclick="showHome()" style="margin-top: 2rem; background: rgba(0, 242, 255, 0.1); color: var(--primary); border: 1px solid var(--primary);">GO TO HOME</button>
+                </div>
+                <div id="results-container" style="display: none;">
+                    <div id="results"></div>
+                </div>
+            </div>
+        </div>
+
+        </div>
+
+    <script>
+        // Multi-Language Support
+        const translations = {
+            en: {
+                app_title: "QuantumShield",
+                app_subtitle: "Future-Safe Banking Solutions: Audit, Discover, and Secure your infrastructure against Post-Quantum threats.",
+                engine_checking: "Intelligence Engine: Checking...",
+                engine_online: "Intelligence Engine: Online (Live Mode)",
+                engine_offline: "Intelligence Engine: Offline (Simulation Mode)",
+                input_placeholder: "Enter endpoint (e.g. secure.bank.com)",
+                btn_audit: "INITIATE AUDIT",
+                q_score_label: "Quantum Resilience Score (Q-Score)",
+                q_score_desc: "A composite metric based on Protocol, Algs, and CA reputation.",
+                history_title: "Audit History",
+                profile_title: "Quantum Security Lead",
+                clearance_label: "Security Clearance",
+                verified_scans: "Verified Scans",
+                verified_certs: "Verified Certifications Issued",
+                close_portal: "CLOSE PORTAL",
+                threat_feed_live: "LIVE THREAT FEED",
+                auth_failed: "Security Verification Failed",
+                audit_report: "Audit Report",
+                download_json: "DOWNLOAD JSON",
+                cbom_title: "CBOM.json Inventory (Bill of Materials)",
+                ct_log_label: "CT Log Status",
+                hndl_exposure_label: "HNDL Exposure",
+                ca_pqc_label: "CA PQC Readiness",
+                verified_val: "VERIFIED",
+                unverified_val: "UNVERIFIED",
+                history_empty: "No previous audits found.",
+                analysis_title: "Sophisticated Threat Analysis",
+                analysis_desc: "Your infrastructure is analyzed by our proprietary Quantum-Resistance Engine. We don't just check for standard vulnerabilities; we simulate the cryptographic decay your data will face over the next decade.",
+                realtime_label: "Real-Time",
+                scanning_label: "Scanning",
+                ai_powered_label: "AI-Powered",
+                logic_label: "Logic",
+                hndl_sim_label: "HNDL Attack Vector Simulation",
+                hndl_visual_title: "Visualizing the Cryptographic Sunset",
+                capture_label: "Capture",
+                store_label: "Store",
+                decrypt_label: "Decrypt",
+                hndl_warning_text: "Our simulator shows that traffic from your endpoint is highly vulnerable to HNDL (Harvest Now, Decrypt Later). Without PQC (Post-Quantum Cryptography), your most sensitive data—stored today—becomes transparent tomorrow."
+            },
+            hi: {
+                app_title: "क्वांटमशील्ड",
+                app_subtitle: "भविष्य के लिए सुरक्षित बैंकिंग समाधान: क्वांटम खतरों के खिलाफ अपने बुनियादी ढांचे का ऑडिट करें और उसे सुरक्षित करें।",
+                engine_checking: "इंटेलिजेंस इंजन: जांच कर रहा है...",
+                engine_online: "इंटेलिजेंस इंजन: ऑनलाइन (लाइव मोड)",
+                engine_offline: "इंटेलिजेंस इंजन: ऑफलाइन (सिमुलेशन मोड)",
+                input_placeholder: "एंडपॉइंट दर्ज करें (उदा. secure.bank.com)",
+                btn_audit: "ऑडिट शुरू करें",
+                q_score_label: "क्वांटम लचीलापन स्कोर (Q-Score)",
+                q_score_desc: "प्रोटोकॉल, एल्गोरिदम और CA प्रतिष्ठा पर आधारित एक समग्र मीट्रिक।",
+                history_title: "ऑडिट इतिहास",
+                profile_title: "क्वांटम सुरक्षा प्रमुख",
+                clearance_label: "सुरक्षा मंजूरी",
+                verified_scans: "सत्यापित स्कैन",
+                verified_certs: "सत्यापित प्रमाणपत्र जारी",
+                close_portal: "पोर्टल बंद करें",
+                threat_feed_live: "लाइव खतरा फ़ीड",
+                auth_failed: "सुरक्षा सत्यापन विफल",
+                audit_report: "ऑडिट रिपोर्ट",
+                download_json: "JSON डाउनलोड करें",
+                cbom_title: "CBOM.json इन्वेंट्री (सामग्री का बिल)",
+                ct_log_label: "CT लॉग स्थिति",
+                hndl_exposure_label: "HNDL एक्सपोजर",
+                ca_pqc_label: "CA PQC तैयारी",
+                verified_val: "सत्यापित",
+                unverified_val: "असत्यापित",
+                history_empty: "कोई पिछला ऑडिट नहीं मिला।",
+                analysis_title: "परिष्कृत खतरा विश्लेषण",
+                analysis_desc: "आपके बुनियादी ढांचे का विश्लेषण हमारे मालिकाना क्वांटम-प्रतिरोध इंजन द्वारा किया जाता है। हम केवल मानक कमजोरियों की जांच नहीं करते हैं; हम उस क्रिप्टोग्राफिक क्षय का अनुकरण करते हैं जिसका सामना आपका डेटा अगले दशक में करेगा।",
+                realtime_label: "रियल-टाइम",
+                scanning_label: "स्कैनिंग",
+                ai_powered_label: "AI-संचालित",
+                logic_label: "तर्क",
+                hndl_sim_label: "HNDL हमला वेक्टर सिमुलेशन",
+                hndl_visual_title: "क्रिप्टोग्राफिक सूर्यास्त की कल्पना",
+                capture_label: "कैप्चर",
+                store_label: "स्टोर",
+                decrypt_label: "डिक्रिप्ट",
+                hndl_warning_text: "हमारा सिम्युलेटर दिखाता है कि आपके समापन बिंदु से ट्रैफ़िक HNDL (अभी कटाई करें, बाद में डिक्रिप्ट करें) के लिए अत्यधिक संवेदनशील है। PQC (पोस्ट-क्वांटम क्रिप्टोग्राफी) के बिना, आपका सबसे संवेदनशील डेटा—आज संग्रहीत—कल पारदर्शी हो जाता है।"
+            },
+            ar: {
+                app_title: "درع الكم",
+                app_subtitle: "حلول مصرفية آمنة للمستقبل: فحص واكتشاف وتأمين بنية نظامك الأساسية ضد تهديدات ما بعد الكم.",
+                engine_checking: "محرك الذكاء: جاري الفحص...",
+                engine_online: "محرك الذكاء: متصل (وضع مباشر)",
+                engine_offline: "محرك الذكاء: غير متصل (وضع المحاكاة)",
+                input_placeholder: "أدخل عنوان الموقع (مثال: secure.bank.com)",
+                btn_audit: "بدء التدقيق",
+                q_score_label: "درجة مرونة الكم (Q-Score)",
+                q_score_desc: "مقياس مركب يعتمد على البروتوكول والخوارزميات وسمعة مصدر الشهادة.",
+                history_title: "سجل التدقيق",
+                profile_title: "رئيس أمن الكم",
+                clearance_label: "التصريح الأمني",
+                verified_scans: "عمليات الفحص المؤكدة",
+                verified_certs: "الشهادات الصادرة",
+                close_portal: "إغلاق البوابة",
+                threat_feed_live: "موجز التهديدات المباشر",
+                auth_failed: "فشل التحقق الأمني",
+                audit_report: "تقرير التدقيق",
+                download_json: "تنزيل JSON",
+                cbom_title: "مخزون CBOM.json (قائمة المواد)",
+                ct_log_label: "حالة سجل CT",
+                hndl_exposure_label: "تعرض HNDL",
+                ca_pqc_label: "جاهزية CA PQC",
+                verified_val: "مؤكد",
+                unverified_val: "غير مؤكد",
+                history_empty: "لم يتم العثور على عمليات تدقيق سابقة.",
+                analysis_title: "تحليل التهديدات المتطور",
+                analysis_desc: "يتم تحليل بنية نظامك الأساسية بواسطة محرك مقاومة الكم المملوك لنا. لا نكتفي بفحص الثغرات القياسية؛ بل نقوم بمحاكاة التآكل التشفيري الذي ستواجهه بياناتك خلال العقد القادم.",
+                realtime_label: "وقت حقيقي",
+                scanning_label: "مسح ضوئي",
+                ai_powered_label: "مدعوم بالذكاء الاصطناعي",
+                logic_label: "منطق",
+                hndl_sim_label: "محاكاة ناقل هجوم HNDL",
+                hndl_visual_title: "تصور غروب الشمس التشفيري",
+                capture_label: "التقاط",
+                store_label: "تخزين",
+                decrypt_label: "فك التشفير",
+                hndl_warning_text: "يوضح جهاز المحاكاة لدينا أن حركة المرور من نقطة النهاية الخاصة بك معرضة بشدة لـ HNDL (الالتقاط الآن وفك التشفير لاحقًا). بدون PQC (تشفير ما بعد الكم)، ستصبح بياناتك الأكثر حساسية - المخزنة اليوم - شفافة غدًا."
+            },
+            es: {
+                app_title: "QuantumShield",
+                app_subtitle: "Soluciones bancarias seguras para el futuro: audite, descubra y proteja su infraestructura contra las amenazas post-cuánticas.",
+                engine_checking: "Motor de Inteligencia: Comprobando...",
+                engine_online: "Motor de Inteligencia: En línea (Modo Live)",
+                engine_offline: "Motor de Inteligencia: Desconectado (Modo Simulación)",
+                input_placeholder: "Ingrese el endpoint (ej. secure.bank.com)",
+                btn_audit: "INICIAR AUDITORÍA",
+                q_score_label: "Puntuación de Resiliencia Cuántica (Q-Score)",
+                q_score_desc: "Una métrica compuesta basada en el Protocolo, los Algs y la reputación de la CA.",
+                history_title: "Historial de Auditoría",
+                profile_title: "Líder de Seguridad Cuántica",
+                clearance_label: "Nivel de Seguridad",
+                verified_scans: "Escaneos Verificados",
+                verified_certs: "Certificaciones Emitidas",
+                close_portal: "CERRAR PORTAL",
+                threat_feed_live: "FUENTE de AMENAZAS EN VIVO",
+                auth_failed: "Verificación de Seguridad Fallida",
+                audit_report: "Informe de Auditoría",
+                download_json: "DESCARGAR JSON",
+                cbom_title: "Inventario CBOM.json (Lista de Materiales)",
+                ct_log_label: "Estado de Registro CT",
+                hndl_exposure_label: "Exposición HNDL",
+                ca_pqc_label: "Preparación de CA PQC",
+                verified_val: "VERIFICADO",
+                unverified_val: "NO VERIFICADO",
+                history_empty: "No se encontraron auditorías previas.",
+                analysis_title: "Análisis de Amenazas Sofisticado",
+                analysis_desc: "Su infraestructura es analizada por nuestro motor de resistencia cuántica patentado. No solo verificamos las vulnerabilidades estándar; simulamos la degradación criptográfica que enfrentarán sus datos durante la próxima década.",
+                realtime_label: "Tiempo Real",
+                scanning_label: "Escaneo",
+                ai_powered_label: "Potenciado por IA",
+                logic_label: "Lógica",
+                hndl_sim_label: "Simulación de Vector de Ataque HNDL",
+                hndl_visual_title: "Visualizando el Ocaso Criptográfico",
+                capture_label: "Capturar",
+                store_label: "Almacenar",
+                decrypt_label: "Descifrar",
+                hndl_warning_text: "Nuestro simulador muestra que el tráfico de su endpoint es altamente vulnerable a HNDL (Harvest Now, Decrypt Later). Sin PQC (Criptografía Post-Cuántica), sus datos más sensibles, almacenados hoy, se volverán transparentes mañana."
+            },
+            mr: {
+                app_title: "क्वांटमशील्ड",
+                app_subtitle: "भविष्यासाठी सुरक्षित बँकिंग सोल्यूशन्स: क्वांटम धोक्यांपासून तुमच्या इन्फ्रास्ट्रक्चरचे ऑडिट करा आणि ते सुरक्षित करा.",
+                engine_checking: "इंटेलिजन्स इंजिन: तपासत आहे...",
+                engine_online: "इंटेलिजन्स इंजिन: ऑनलाइन (लाइव्ह मोड)",
+                engine_offline: "इंटेलिजन्स इंजिन: ऑफलाइन (सिम्युलेशन मोड)",
+                input_placeholder: "एंडपॉइंट प्रविष्ट करा (उदा. secure.bank.com)",
+                btn_audit: "ऑडिट सुरू करा",
+                q_score_label: "क्वांटम लवचिकता स्कोअर (Q-Score)",
+                q_score_desc: "प्रोटोकॉल, अल्गोरिदम आणि CA प्रतिष्ठेवर आधारित एकत्रित मेट्रिक.",
+                history_title: "ऑडिट इतिहास",
+                profile_title: "क्वांटम सुरक्षा प्रमुख",
+                clearance_label: "सुरक्षा क्लीयरन्स",
+                verified_scans: "सत्यापित स्कॅन",
+                verified_certs: "सत्यापित प्रमाणपत्रे जारी",
+                close_portal: "पोर्टल बंद करा",
+                threat_feed_live: "लाइव्ह थ्रेट फीड",
+                auth_failed: "सुरक्षा पडताळणी अयशस्वी",
+                audit_report: "ऑडिट अहवाल",
+                download_json: "JSON डाउनलोड करा",
+                cbom_title: "CBOM.json इन्व्हेंटरी (मटेरियल सोल्यूशन्स)",
+                ct_log_label: "CT लॉग स्थिती",
+                hndl_exposure_label: "HNDL एक्सपोजर",
+                ca_pqc_label: "CA PQC सज्जता",
+                verified_val: "सत्यापित",
+                unverified_val: "असत्यापित",
+                history_empty: "मागील ऑडिट आढळले नाहीत.",
+                analysis_title: "प्रगत थ्रेट विश्लेषण",
+                analysis_desc: "तुमच्या इन्फ्रास्ट्रक्चरचे विश्लेषण आमच्या प्रोप्रायटरी क्वांटम-रेझिस्टन्स इंजिनद्वारे केले जाते. आम्ही फक्त मानक कमतरता तपासत नाही; आम्ही तुमच्या डेटाला पुढील दशकात सामोरे जावे लागणाऱ्या क्रिप्टोग्राफिक क्षयाचे सिम्युलेशन करतो.",
+                realtime_label: "रिअल-टाइम",
+                scanning_label: "स्कॅनिंग",
+                ai_powered_label: "AI-सक्षम",
+                logic_label: "तर्कशास्त्र",
+                hndl_sim_label: "HNDL अटॅक वेक्टर सिम्युलेशन",
+                hndl_visual_title: "क्रिप्टोग्राफिक सूर्यास्त पाहणे",
+                capture_label: "कॅप्चर",
+                store_label: "स्टोअर",
+                decrypt_label: "डिक्रिप्ट",
+                hndl_warning_text: "आमचे सिम्युलेटर दर्शवते की तुमच्या एंडपॉइंटवरील रहदारी HNDL (आता गोळा करा, नंतर डिक्रिप्ट करा) साठी अत्यंत असुरक्षित आहे. PQC (पोस्ट-क्वांटम क्रिप्टोग्राफी) शिवाय, तुमचा सर्वात संवेदनशील डेटा—आज स्टोअर केलेला—उद्या पारदर्शक होईल."
+            },
+            bn: {
+                app_title: "কোয়ান্টামশিল্ড",
+                app_subtitle: "ভবিষ্যতের জন্য সুরক্ষিত ব্যাঙ্কিং সমাধান: কোয়ান্টাম হুমকির বিরুদ্ধে আপনার পরিকাঠামো অডিট এবং সুরক্ষিত করুন।",
+                engine_checking: "ইন্টেলিজেন্স ইঞ্জিন: পরীক্ষা করা হচ্ছে...",
+                engine_online: "ইন্টেলিজেন্স ইঞ্জিন: অনলাইন (লাইভ মোড)",
+                engine_offline: "ইন্টেলিজেন্স ইঞ্জিন: অফলাইন (সিমুলেশন মোড)",
+                input_placeholder: "এন্ডপয়েন্ট লিখুন (যেমন secure.bank.com)",
+                btn_audit: "অডিট শুরু করুন",
+                q_score_label: "কোয়ান্টাম স্থিতিস্থাপকতা স্কোর (Q-Score)",
+                q_score_desc: "প্রোটোকল, অ্যালগরিদম এবং CA সম্মানের উপর ভিত্তি করে একটি যৌগিক মেট্রিক।",
+                history_title: "অডিট ইতিহাস",
+                profile_title: "কোয়ান্টাম সিকিউরিটি প্রধান",
+                clearance_label: "নিরাপত্তা ছাড়পত্র",
+                verified_scans: "যাচাইকৃত স্ক্যান",
+                verified_certs: "প্রদান করা যাচাইকৃত শংসাপত্র",
+                close_portal: "পোর্টাল বন্ধ করুন",
+                threat_feed_live: "লাইভ থ্রেট ফিড",
+                auth_failed: "নিরাপত্তা যাচাইকরণ ব্যর্থ হয়েছে",
+                audit_report: "অডিট রিপোর্ট",
+                download_json: "JSON ডাউনলোড করুন",
+                cbom_title: "CBOM.json ইনভেন্টরি (পণ্যের তালিকা)",
+                ct_log_label: "CT লগ স্থিতি",
+                hndl_exposure_label: "HNDL এক্সপোজার",
+                ca_pqc_label: "CA PQC প্রস্তুতি",
+                verified_val: "যাচাইকৃত",
+                unverified_val: "অযাচাইকৃত",
+                history_empty: "কোন পূর্ববর্তী অডিট পাওয়া যায়নি।",
+                analysis_title: "পরিশীলিত হুমকি বিশ্লেষণ",
+                analysis_desc: "আপনার পরিকাঠামো আমাদের মালিকানাধীন কোয়ান্টাম-রেজিস্ট্যান্স ইঞ্জিন দ্বারা বিশ্লেষণ করা হয়। আমরা কেবল স্ট্যান্ডার্ড দুর্বলতাগুলি পরীক্ষা করি না; আমরা আপনার ডেটা আগামী দশকে যে ক্রিপ্টোগ্রাফিক ক্ষয়ের সম্মুখীন হবে তা সিমুলেট করি।",
+                realtime_label: "রিয়েল-টাইম",
+                scanning_label: "স্ক্যানিং",
+                ai_powered_label: "AI-চালিত",
+                logic_label: "যুক্তি",
+                hndl_sim_label: "HNDL অ্যাটাক ভেক্টর সিমুলেশন",
+                hndl_visual_title: "ক্রিপ্টোগ্রাফিক সূর্যাস্ত কল্পনা করা",
+                capture_label: "ক্যাপচার",
+                store_label: "স্টোর",
+                decrypt_label: "ডিক্রিপ্ট",
+                hndl_warning_text: "আমাদের সিমুলেটর দেখায় যে আপনার এন্ডপয়েন্ট থেকে ট্র্যাফিক HNDL (এখন সংগ্রহ করুন, পরে ডিক্রিপ্ট করুন) এর জন্য অত্যন্ত ঝুঁকিপূর্ণ। PQC (পোস্ট-কোয়ান্টাম ক্রিপ্টোগ্রাফি) ছাড়া, আপনার সবচেয়ে সংবেদনশীল ডেটা—যা আজ স্টোর করা হয়েছে—আগামীকাল স্বচ্ছ হয়ে যাবে।"
+            }
+        };
+
+        function changeLanguage(lang) {
+            document.body.classList.toggle('rtl', lang === 'ar');
+            const dictionary = translations[lang];
+            
+            document.querySelectorAll('[data-i18n]').forEach(el => {
+                const key = el.getAttribute('data-i18n');
+                if (dictionary[key]) el.innerText = dictionary[key];
+            });
+
+            document.querySelectorAll('[data-i18n-holder]').forEach(el => {
+                const key = el.getAttribute('data-i18n-holder');
+                if (dictionary[key]) el.placeholder = dictionary[key];
+            });
+
+            // Update persistent UI state
+            currentLang = lang;
+            
+            // Sync all selectors
+            document.querySelectorAll('.top-lang-selector').forEach(sel => sel.value = lang);
+        }
+
+        let currentLang = 'en';
+
+        // Live Threat Simulation (Restored)
+        const threatMsgs = [
+            "HNDL NODE DETECTED IN EU-WEST-1",
+            "NIST-P384 BRUTE-FORCE ATTEMPT ON CLOUD REPOSITORY",
+            "QUANTUM ENTANGLEMENT DRIFT DETECTED IN CRYPTO-CHIP",
+            "BULK DATA CAPTURE ACTIVITY SPIKE IN APAC REGION",
+            "NEW HYBRID-KEM PRE-MASTER SECRET INTERCEPTED"
+        ];
+        setInterval(() => {
+            const ticker = document.getElementById('threat-ticker-text');
+            const time = new Date().toLocaleTimeString();
+            const msg = threatMsgs[Math.floor(Math.random() * threatMsgs.length)];
+            ticker.innerText = `[${time}] ${msg} ... ${ticker.innerText.substring(0, 500)}`;
+        }, 5000);
+
+        let auditHistory = JSON.parse(localStorage.getItem('qs_history') || '[]');
+
+        function toggleHistory() {
+            const panel = document.getElementById('historyPanel');
+            panel.classList.toggle('active');
+            renderHistory();
+        }
+
+        function toggleProfile() {
+            const card = document.getElementById('profileCard');
+            const overlay = document.getElementById('overlay');
+            const isVisible = card.style.display === 'block';
+            card.style.display = isVisible ? 'none' : 'block';
+            overlay.style.display = isVisible ? 'none' : 'block';
+            
+            // Update profile stats
+            document.getElementById('profile-scan-count').innerText = auditHistory.length;
+            document.getElementById('profile-cert-count').innerText = auditHistory.filter(i => i.label.includes('Safe')).length;
+        }
+
+        function closeModals() {
+            document.getElementById('profileCard').style.display = 'none';
+            document.getElementById('overlay').style.display = 'none';
+        }
+
+        function saveToHistory(data, isSimulated) {
+            const date = new Date();
+            const validUntil = new Date();
+            validUntil.setFullYear(date.getFullYear() + 3);
+            
+            const dateStr = date.toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' });
+            const validStr = validUntil.toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' });
+            const refNo = `QS/${date.getFullYear()}/${Math.floor(Math.random()*90000)+10000}/${(date.getMonth()+1).toString().padStart(2,'0')}/${date.getDate().toString().padStart(2,'0')}`;
+            const serialNo = `CERT-PQC-${Math.floor(Math.random()*900000)+100000}`;
+
+            const historyItem = {
+                target: data.target,
+                label: data.label,
+                q_score: data.q_score,
+                date: date.toLocaleString(),
+                dateStr,
+                validStr,
+                refNo,
+                serialNo,
+                isSimulated: isSimulated,
+                data: data // Full results for re-rendering
+            };
+            auditHistory.unshift(historyItem);
+            if (auditHistory.length > 20) auditHistory.pop();
+            localStorage.setItem('qs_history', JSON.stringify(auditHistory));
+        }
+
+        function renderHistory() {
+            const container = document.getElementById('historyList');
+            const dic = translations[currentLang];
+            container.innerHTML = auditHistory.length === 0 ? 
+                `<div style="grid-column: 1/-1; text-align: center; padding: 10rem 0;">
+                    <div style="font-size: 4rem; opacity: 0.2; margin-bottom: 1rem;">🕳️</div>
+                    <p style="color: var(--muted); font-size: 1.2rem;">${dic.history_empty}</p>
+                </div>` : '';
+            
+            auditHistory.forEach((item, index) => {
+                const isSafe = item.label.includes('Safe');
+                const div = document.createElement('div');
+                div.className = 'history-item';
+                div.innerHTML = `
+                    <div style="margin-bottom: 1.5rem; display: flex; align-items: center; gap: 0.75rem; color: var(--primary); font-size: 0.85rem; font-weight: 700;">
+                        <span>📄 Official Compliance Certificate</span>
+                    </div>
+                    
+                    <h3 style="font-size: 1.6rem; color: #fff; margin-bottom: 1rem; font-family: monospace; letter-spacing: -0.5px;">${item.target}</h3>
+                    
+                    <div style="display: grid; grid-template-columns: 1fr; gap: 0.75rem; margin-bottom: 2rem;">
+                        <div style="display: flex; justify-content: space-between; border-bottom: 1px solid rgba(255,255,255,0.05); padding-bottom: 0.5rem;">
+                            <span style="color: var(--muted); font-size: 0.8rem;">Status:</span>
+                            <span style="color: ${isSafe ? 'var(--success)' : 'var(--danger)'}; font-weight: 800; font-size: 0.8rem;">
+                                ${isSafe ? '✔ Compliant' : '✘ Non-Compliant'}
+                            </span>
+                        </div>
+                        <div style="display: flex; justify-content: space-between; border-bottom: 1px solid rgba(255,255,255,0.05); padding-bottom: 0.5rem;">
+                            <span style="color: var(--muted); font-size: 0.8rem;">Ref. No:</span>
+                            <span style="color: #fff; font-family: monospace; font-size: 0.8rem;">${item.refNo || 'N/A'}</span>
+                        </div>
+                        <div style="display: flex; justify-content: space-between; border-bottom: 1px solid rgba(255,255,255,0.05); padding-bottom: 0.5rem;">
+                            <span style="color: var(--muted); font-size: 0.8rem;">Issued:</span>
+                            <span style="color: #fff; font-size: 0.8rem;">${item.dateStr || item.date}</span>
+                        </div>
+                        <div style="display: flex; justify-content: space-between; border-bottom: 1px solid rgba(255,255,255,0.05); padding-bottom: 0.5rem;">
+                            <span style="color: var(--muted); font-size: 0.8rem;">Valid Until:</span>
+                            <span style="color: #fff; font-size: 0.8rem;">${item.validStr || 'N/A'}</span>
+                        </div>
+                        <div style="display: flex; justify-content: space-between; border-bottom: 1px solid rgba(255,255,255,0.05); padding-bottom: 0.5rem;">
+                            <span style="color: var(--muted); font-size: 0.8rem;">Q-Score:</span>
+                            <span style="color: var(--primary); font-weight: 900; font-size: 0.8rem;">${item.q_score}/100</span>
+                        </div>
+                        <div style="display: flex; justify-content: space-between;">
+                            <span style="color: var(--muted); font-size: 0.8rem;">Serial:</span>
+                            <span style="color: #60a5fa; font-family: monospace; font-size: 0.8rem;">${item.serialNo || 'N/A'}</span>
+                        </div>
+                    </div>
+                    
+                    <div style="display: flex; gap: 1rem;">
+                        <button style="flex: 1; padding: 0.8rem; font-size: 0.8rem; background: rgba(0, 242, 255, 0.1); border: 1px solid var(--primary); color: var(--primary); font-weight: 700; letter-spacing: 1px;">📜 VIEW CERTIFICATE</button>
+                        <button onclick="event.stopPropagation(); downloadCBOMFromHistory(${index})" style="padding: 0.8rem; font-size: 0.8rem; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); color: #fff;" title="Download CBOM">JSON</button>
+                    </div>
+                `;
+                div.onclick = () => {
+                    renderResults(item.data, item.isSimulated || false);
+                    toggleHistory();
+                    showDashboard();
+                };
+                container.appendChild(div);
+            });
+        }
+
+        function downloadCBOMFromHistory(index) {
+            const item = auditHistory[index];
+            if (!item || !item.data || !item.data.cbom) return;
+            const data = item.data.cbom;
+            const blob = new Blob([JSON.stringify(data, null, 4)], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `cbom_${item.target}.json`;
+            a.click();
+        }
+
+        let currentCBOM = null;
+        let currentScanTarget = "";
+        let currentScanAlg = "";
+
+        // Dynamic Connection Check
+        async function checkBackend() {
+            const statusEl = document.getElementById('connection-status');
+            const statusText = document.getElementById('status-text');
+            const dic = translations[currentLang];
+            try {
+                const res = await fetch('/api/scan', { method: 'OPTIONS' });
+                statusEl.className = 'status-header status-online';
+                statusText.innerText = dic.engine_online;
+            } catch (e) {
+                statusEl.className = 'status-header status-offline';
+                statusText.innerText = dic.engine_offline;
+            }
+        }
+        checkBackend();
+
+        function downloadCBOM() {
+            if (!currentCBOM) return;
+            const blob = new Blob([JSON.stringify(currentCBOM, null, 4)], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `cbom_${currentCBOM.component.name || 'export'}.json`;
+            a.click();
+        }
+        function isValidEndpoint(str) {
+            // Require at least one dot for domains to avoid single-word junk
+            const domainRegex = /^(?!:\/\/)([a-zA-Z0-9-]+\.)+[a-zA-Z]{2,}$/;
+            const ipRegex = /^(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$/;
+            const ipv6Regex = /^(([0-9a-fA-F]{1,4}:){7,7}[0-9a-fA-F]{1,4}|([0-9a-fA-F]{1,4}:){1,7}:|([0-9a-fA-F]{1,4}:){1,6}:[0-9a-fA-F]{1,4}|([0-9a-fA-F]{1,4}:){1,5}(:[0-9a-fA-F]{1,4}){1,2}|([0-9a-fA-F]{1,4}:){1,4}(:[0-9a-fA-F]{1,4}){1,3}|([0-9a-fA-F]{1,4}:){1,3}(:[0-9a-fA-F]{1,4}){1,4}|([0-9a-fA-F]{1,4}:){1,2}(:[0-9a-fA-F]{1,4}){1,5}|[0-9a-fA-F]{1,4}:((:[0-9a-fA-F]{1,4}){1,6})|:((:[0-9a-fA-F]{1,4}){1,7}|:)|fe80:(:[0-9a-fA-F]{0,4}){0,4}%[0-9a-zA-Z]{1,}|::(ffff(:0{1,4}){0,1}:){0,1}((25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}[0-9])\.){3,3}(25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}[0-9]))$/;
+            
+            return domainRegex.test(str) || ipRegex.test(str) || ipv6Regex.test(str);
+        }
+
+        function triggerIntrusionAlert(msg) {
+            document.getElementById('intrusion-msg').innerText = msg || "Malicious script injection attempt detected.";
+            document.getElementById('intrusionAlert').style.display = 'block';
+            console.error("FIREWALL ALERT: Hostile activity detected.");
+        }
+
+        function dismissAlert() {
+            document.getElementById('intrusionAlert').style.display = 'none';
+        }
+
+        async function startScan() {
+            console.log("Audit Initiated...");
+            const targetInput = document.getElementById('target');
+            let rawInput = targetInput.value.trim();
+            const resultsDiv = document.getElementById('results');
+            const loader = document.getElementById('loader');
+            
+            // AUTOMATIC SANITIZATION: Extract hostname from full URLs
+            let target = rawInput;
+            try {
+                if (rawInput.startsWith('http://') || rawInput.startsWith('https://')) {
+                    const url = new URL(rawInput);
+                    target = url.hostname;
+                } else if (rawInput.includes('/')) {
+                    // Handle cases like "example.com/path"
+                    target = rawInput.split('/')[0];
+                }
+            } catch (e) {
+                // Fallback to original input if URL parsing fails
+                target = rawInput;
+            }
+
+            console.log(`Sanitized Target: ${target}`);
+            resultsDiv.style.display = 'none';
+
+            // 1. STRICT INPUT VERIFICATION (on the sanitized hostname)
+            if (!target || !isValidEndpoint(target)) {
+                targetInput.style.borderColor = 'var(--danger)';
+                showError("INVALID INFRASTRUCTURE: Target must be a valid domain (e.g., bank.com) or IP. We have automatically stripped protocols/paths, but the resulting domain is invalid.");
+                return;
+            }
+            
+            targetInput.style.borderColor = 'var(--primary)';
+            loader.style.display = 'block';
+
+            // 2. BACKEND SERVER CROSS-CHECK
+            try {
+                const response = await fetch('/api/scan', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ target: target }),
+                    signal: AbortSignal.timeout(4000)
+                });
+                
+                const data = await response.json();
+
+                if (response.status === 403 || response.status === 429 || data.status === 'blocked') {
+                    triggerIntrusionAlert(data.message);
+                    throw new Error("ACCESS BLOCKED BY FIREWALL");
+                }
+
+                if (data.status === 'error' || !response.ok) throw new Error(data.message);
+                
+                saveToHistory(data, false);
+                renderResults(data, false);
+            } catch (err) {
+                console.warn('Backend server NOT detected. Running verification simulation.', err);
+                simulateScan(target);
+            } finally {
+                loader.style.display = 'none';
+            }
+        }
+
+        function showError(msg) {
+            const resultsDiv = document.getElementById('results');
+            resultsDiv.innerHTML = `
+                <div style="padding: 2.5rem; background: rgba(239, 68, 68, 0.05); border: 1px dashed var(--danger); border-radius: 16px; text-align: center;">
+                    <div style="font-size: 2rem; margin-bottom: 1rem;">⚠️</div>
+                    <h3 style="color: var(--danger); margin-bottom: 0.5rem; text-transform: uppercase; letter-spacing: 1px;">Security Verification Failed</h3>
+                    <p style="color: var(--muted); max-width: 400px; margin: 0 auto;">${msg}</p>
+                </div>
+            `;
+            resultsDiv.style.display = 'block';
+        }
+        function simulateScan(target) {
+            // Helper to generate a deterministic pseudo-random seed from string
+            const getSeed = (s) => s.split('').reduce((a, b) => { a = ((a << 5) - a) + b.charCodeAt(0); return a & a; }, 0);
+            const seed = Math.abs(getSeed(target));
+            
+            const isSafe = target.includes('secure') || (seed % 10 === 0); // 10% chance to be safe randomly
+            const isCritical = target.includes('.ru') || target.includes('.cn') || (seed % 7 === 0);
+            
+            // Generate a variable score between 30-95 for unsafe, 96-100 for safe
+            const baseScore = isSafe ? 96 : 30;
+            const variance = isSafe ? (seed % 5) : (seed % 65);
+            const qScore = baseScore + variance;
+
+            const mockData = {
+                target: target,
+                label: isSafe ? "Fully Quantum Safe" : "Non-PQC Ready",
+                q_score: qScore,
+                forensics: {
+                    ct_log_verified: true,
+                    hndl_exposure: isSafe ? "N/A (Shielded)" : `${(seed % 500) + 100} days of capture window exposure`,
+                    ca_pqc_readiness: isSafe ? "Advanced (PQC Partner)" : "Standard CA"
+                },
+                threat_intel: {
+                    location: isCritical ? "High-Monitoring Jurisdiction" : "EU-Region (Low Risk)",
+                    hndl_risk_zone: isCritical ? "Critical (Known Capture Point)" : "Minimal",
+                    active_threat_factors: isCritical ? ["State-sponsored HNDL node detected", "Active bulk archiving"] : ["Standard commercial monitoring"]
+                },
+                service_discovery: target.includes('api') ? "Public-facing API" : (target.includes('vpn') ? "TLS-based VPN Gateway" : "Web Server Application"),
+                recommendations: isSafe ? [
+                    { "title": "Quantum Maintenance", "steps": ["Maintain FIPS-203/204 compliance.", "Verify daily PQC header integrity."] }
+                ] : [
+                    { "title": "Urgent HNDL Mitigation", "steps": ["Migrate to ML-KEM/ML-DSA.", "Wrap traffic in PQC tunnels."] },
+                    { "title": "Cloud Migration", "steps": ["AWS: Enable Hybrid Post-Quantum KMS.", "GCP: Use X-Wing hybrid KEM."] }
+                ],
+                inventory: {
+                    tls_version: isSafe ? "TLSv1.3 (PQC Hybrid)" : "TLSv1.3 (Classical)",
+                    cipher_suite: isSafe ? "TLS_AES_256_GCM_SHA384" : "ECDHE-RSA-AES256-GCM",
+                    key_exchange: isSafe ? (isSafe ? "ML-KEM-768 / X25519" : "X25519") : (seed % 2 === 0 ? "2048-bit RSA" : "P-256"),
+                    signature_algorithm: isSafe ? "ML-DSA-65 (Dilithium)" : (seed % 2 === 0 ? "sha256WithRSAEncryption" : "ecdsa-with-SHA256")
+                },
+                cbom: {
+                    bomFormat: "CBOM", specVersion: "1.1",
+                    component: {
+                        name: target, 
+                        service_classification: target.includes('api') ? "Public API" : "Web Server",
+                        cryptography: { ciphers: [{ name: isSafe ? "ML-KEM" : "AES-GCM", pqc_ready: isSafe }] }
+                    }
+                }
+            };
+            saveToHistory(mockData, true);
+            renderResults(mockData, true);
+        }
+
+        function closeCert() { document.getElementById('certModal').style.display = 'none'; }
+        function showCert(target, alg) {
+            document.getElementById('cert-endpoint').innerText = target;
+            document.getElementById('cert-alg').innerText = alg;
+            document.getElementById('certModal').style.display = 'flex';
+        }
+
+        function renderResults(data, isSimulated) {
+            const resultsDiv = document.getElementById('results');
+            
+            // Fix: Restore the full template structure if it was overwritten by an error message previously
+            resultsDiv.innerHTML = `
+                ${isSimulated ? '<div style="background: rgba(245, 158, 11, 0.1); border: 1px solid var(--warning); color: var(--warning); padding: 0.75rem; border-radius: 8px; margin-bottom: 1.5rem; font-size: 0.85rem; text-align: center;"><b>SIMULATION MODE:</b> Backend not detected. Showing research-backed mock analysis.</div>' : ''}
+                
+                <div class="q-score-container" data-aos="fade-down" data-aos-duration="1000">
+                    <div class="q-score-gauge" id="q-score-gauge">
+                        <div class="q-score-value" id="q-score-text">0</div>
+                    </div>
+                    <div class="stat-label" data-i18n="q_score_label">Quantum Resilience Score (Q-Score)</div>
+                </div>
+
+                <div style="display: flex; justify-content: space-between; align-items: flex-start;">
+                    <div id="status-badge" class="badge"></div>
+                    <div style="display: flex; gap: 1rem; align-items: center;">
+                        <button id="cert-view-btn" onclick="showCert(currentScanTarget, currentScanAlg)" style="padding: 0.4rem 1rem; font-size: 0.75rem; background: var(--success); color: white; display: none;">VIEW CERTIFICATE</button>
+                        <div id="service-discovery" class="service-discovery-tag"></div>
+                    </div>
+                </div>
+                <h2 id="result-target" style="margin-bottom: 2rem;"></h2>
+
+                <div class="forensic-dossier" id="forensic-dossier"></div>
+
+                <div id="quantum-safety-card" class="safety-indicator" data-aos="zoom-in" data-aos-delay="100" data-aos-duration="800">
+                    <div style="font-size: 3rem; margin-bottom: 1rem;" id="safety-icon"></div>
+                    <h2 id="safety-status-title" style="font-size: 2rem; margin-bottom: 0.5rem;"></h2>
+                    <p id="safety-status-desc" style="color: var(--muted); font-size: 1.1rem;"></p>
+                </div>
+
+                <div class="result-grid" data-aos="fade-up" data-aos-delay="200">
+                    <div class="stat-box"><div class="stat-label">TLS Protocol</div><div class="stat-value" id="tls-version"></div></div>
+                    <div class="stat-box"><div class="stat-label">Cipher Suite</div><div class="stat-value" id="cipher-suite"></div></div>
+                    <div class="stat-box"><div class="stat-label">Key Exchange</div><div class="stat-value" id="key-exchange"></div></div>
+                    <div class="stat-box"><div class="stat-label">Signature Alg</div><div class="stat-value" id="sig-alg"></div></div>
+                </div>
+
+                <div class="threat-intel-box" id="threat-intel-container" style="display: none;" data-aos="flip-up" data-aos-easing="ease-out-cubic" data-aos-duration="1000">
+                    <div class="threat-map-simulation">
+                        <div class="map-marker" id="map-marker"></div>
+                    </div>
+                    <div>
+                        <div class="stat-label">Global Threat Intelligence</div>
+                        <h3 id="threat-location" style="color: #fff; margin: 0.5rem 0;"></h3>
+                        <div style="margin-bottom: 1.5rem;">
+                            <span class="stat-label">HNDL Risk Zone:</span>
+                            <span id="threat-risk-level"></span>
+                        </div>
+                        <div id="threat-factors-list"></div>
+                    </div>
+                </div>
+
+                <div class="recommendation" id="recommendation-container"></div>
+
+                <div style="margin-top: 4rem; display: grid; grid-template-columns: 1fr 1fr; gap: 3rem; align-items: center;" data-aos="fade-right" data-aos-delay="300">
+                    <div>
+                        <h2 style="font-size: 2rem; margin-bottom: 1.5rem;" data-i18n="analysis_title">Sophisticated Threat Analysis</h2>
+                        <p style="color: var(--muted); line-height: 1.8; margin-bottom: 2rem;" data-i18n="analysis_desc">
+                            Your infrastructure is analyzed by our proprietary <b>Quantum-Resistance Engine</b>. We don't just check for standard vulnerabilities; we simulate the cryptographic decay your data will face over the next decade.
+                        </p>
+                        <div style="display: flex; gap: 1rem;">
+                            <div style="background: rgba(255,255,255,0.03); padding: 1rem; border-radius: 12px; border: 1px solid rgba(255,255,255,0.05);">
+                                <div style="font-weight: 700; color: var(--primary);" data-i18n="realtime_label">Real-Time</div>
+                                <div style="font-size: 0.75rem; color: var(--muted);" data-i18n="scanning_label">Scanning</div>
+                            </div>
+                            <div style="background: rgba(255,255,255,0.03); padding: 1rem; border-radius: 12px; border: 1px solid rgba(255,255,255,0.05);">
+                                <div style="font-weight: 700; color: var(--secondary);" data-i18n="ai_powered_label">AI-Powered</div>
+                                <div style="font-size: 0.75rem; color: var(--muted);" data-i18n="logic_label">Logic</div>
+                            </div>
+                        </div>
+                    </div>
+                    <img src="cybersecurity_expert_showcase_1773398175698.png" alt="Strategy" style="width: 100%; border-radius: 24px; border: 1px solid rgba(255,255,255,0.1); box-shadow: 0 30px 60px rgba(0,0,0,0.5);">
+                </div>
+
+                <div id="attack-simulation" style="margin-top: 5rem; overflow: hidden; position: relative; padding: 3rem; background: rgba(0,0,0,0.3); border-radius: 32px; border: 1px solid rgba(0, 242, 255, 0.15);" data-aos="zoom-in-up" data-aos-delay="200" data-aos-duration="1000">
+                    <div style="display: grid; grid-template-columns: 1.2fr 1fr; gap: 3rem; align-items: center;">
+                        <div>
+                            <div class="stat-label" data-i18n="hndl_sim_label">HNDL Attack Vector Simulation</div>
+                            <h3 style="font-size: 1.8rem; margin-top: 1rem; margin-bottom: 1.5rem;" data-i18n="hndl_visual_title">Visualizing the Cryptographic Sunset</h3>
+                            <div style="display: flex; gap: 2rem; margin-top: 1.5rem; justify-content: space-between; align-items: center;">
+                                <div style="text-align: center; flex: 1;">
+                                    <div style="font-size: 1.5rem;">📡</div>
+                                </div>
+                            </div>
+                            <p style="color: var(--muted); margin-top: 1.5rem; line-height: 1.7;">
+                                This represents a simulation of data captured now to be decrypted later when quantum computers become viable <b>(Harvest Now, Decrypt Later)</b>. 
+                                Without PQC (Post-Quantum Cryptography), your most sensitive data—stored today—becomes transparent tomorrow.
+                            </p>
+                        </div>
+                        <img src="quantum_threat_visualization_1773398207346.png" alt="Threat" style="width: 100%; border-radius: 20px; filter: brightness(0.8) contrast(1.2);">
+                    </div>
+                </div>
+
+                <div style="margin-top: 4rem;" data-aos="fade-up" data-aos-delay="400" data-aos-duration="1000">
+                    <div style="display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 2rem;">
+                        <div>
+                            <div class="stat-label">Discovery Map</div>
+                            <h2 style="font-size: 2.2rem; background: linear-gradient(135deg, #fff, var(--primary)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; margin-top: 0.5rem;">Cryptographic Bill of Materials (CBOM)</h2>
+                        </div>
+                    </div>
+                    <div style="background: rgba(15, 23, 42, 0.6); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border: 1px solid rgba(0, 242, 255, 0.2); border-radius: 16px; overflow: hidden; box-shadow: inset 0 0 20px rgba(0, 242, 255, 0.05), 0 10px 30px rgba(0,0,0,0.5);">
+                        <table style="width: 100%; border-collapse: collapse; text-align: left;">
+                            <thead>
+                                <tr style="background: linear-gradient(90deg, rgba(0,242,255,0.1), rgba(0,0,0,0) 80%); border-bottom: 2px solid rgba(0, 242, 255, 0.3);">
+                                    <th style="padding: 1.5rem 2rem; font-weight: 700; color: var(--primary); font-size: 1rem; text-transform: uppercase; letter-spacing: 1.5px;">Asset Classification</th>
+                                    <th style="padding: 1.5rem 2rem; font-weight: 700; color: var(--primary); font-size: 1rem; text-transform: uppercase; letter-spacing: 1.5px;">Detected Endpoint</th>
+                                    <th style="padding: 1.5rem 2rem; font-weight: 700; color: var(--primary); font-size: 1rem; text-transform: uppercase; letter-spacing: 1.5px;">PQC Readiness Status</th>
+                                </tr>
+                            </thead>
+                            <tbody id="inventory-list-body">
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <div id="gov-cert-container"></div>
+            `;
+
+            const scoreGauge = document.getElementById('q-score-gauge');
+            const scoreText = document.getElementById('q-score-text');
+            const forensicsDiv = document.getElementById('forensic-dossier');
+            const recommendationContainer = document.getElementById('recommendation-container');
+            
+            // Update Q-Score Gauge
+            const score = data.q_score || 0;
+            scoreGauge.style.background = `conic-gradient(var(--primary) ${score}%, rgba(255, 255, 255, 0.05) 0%)`;
+            scoreText.innerText = score;
+
+            // Render Forensics
+            forensicsDiv.innerHTML = '';
+            const dic = translations[currentLang];
+            const forensicItems = [
+                { label: dic.ct_log_label, val: data.forensics.ct_log_verified ? dic.verified_val : dic.unverified_val },
+                { label: dic.hndl_exposure_label, val: data.forensics.hndl_exposure },
+                { label: dic.ca_pqc_label, val: data.forensics.ca_pqc_readiness }
+            ];
+            forensicItems.forEach(item => {
+                const div = document.createElement('div');
+                div.className = 'forensic-item';
+                div.innerHTML = `<div class="forensic-label">${item.label}</div><div class="forensic-text">${item.val}</div>`;
+                forensicsDiv.appendChild(div);
+            });
+
+            // Re-render recommendation blocks
+            recommendationContainer.innerHTML = '';
+            data.recommendations.forEach(section => {
+                const sect = document.createElement('div');
+                sect.className = 'recommendation-section';
+                sect.innerHTML = `<h3>${section.title}</h3><ul class="recommendation-list"></ul>`;
+                const list = sect.querySelector('ul');
+                section.steps.forEach(step => {
+                    const li = document.createElement('li');
+                    li.className = 'recommendation-item';
+                    li.innerText = step;
+                    list.appendChild(li);
+                });
+                recommendationContainer.appendChild(sect);
+            });
+
+            // Render Threat Intel
+            if (data.threat_intel) {
+                document.getElementById('threat-intel-container').style.display = 'grid';
+                const intel = data.threat_intel;
+                document.getElementById('threat-location').innerText = `Location: ${intel.location || 'Unknown'}`;
+                const riskEl = document.getElementById('threat-risk-level');
+                riskEl.innerText = intel.hndl_risk_zone || 'UNKNOWN';
+                riskEl.style.color = intel.hndl_risk_zone.includes('Critical') ? 'var(--danger)' : (intel.hndl_risk_zone.includes('Minimal') ? 'var(--success)' : 'var(--warning)');
+                
+                const marker = document.getElementById('map-marker');
+                marker.style.top = `${30 + Math.random() * 40}%`;
+                marker.style.left = `${20 + Math.random() * 60}%`;
+
+                const factorsList = document.getElementById('threat-factors-list');
+                factorsList.innerHTML = '';
+                (intel.active_threat_factors || []).forEach(factor => {
+                    const tag = document.createElement('span');
+                    tag.className = 'threat-factor-tag';
+                    tag.innerText = factor;
+                    factorsList.appendChild(tag);
+                });
+            }
+
+            const badge = document.getElementById('status-badge');
+            document.getElementById('result-target').innerText = `${dic.audit_report}: ${data.target}`;
+            document.getElementById('tls-version').innerText = data.inventory.tls_version;
+            document.getElementById('cipher-suite').innerText = data.inventory.cipher_suite;
+            document.getElementById('key-exchange').innerText = data.inventory.key_exchange;
+            document.getElementById('sig-alg').innerText = data.inventory.signature_algorithm;
+
+            badge.innerText = data.label;
+            badge.className = `badge ${data.label.includes('Safe') ? 'badge-safe' : 'badge-unsafe'}`;
+            document.getElementById('service-discovery').innerText = `DISCOVERED: ${data.service_discovery}`;
+            
+            // Safety Assessment Card
+            const safetyCard = document.getElementById('quantum-safety-card');
+            const safetyIcon = document.getElementById('safety-icon');
+            const safetyTitle = document.getElementById('safety-status-title');
+            const safetyDesc = document.getElementById('safety-status-desc');
+            const isSafe = data.label.includes('Safe');
+
+            safetyCard.className = `safety-indicator ${isSafe ? 'safety-safe' : 'safety-unsafe'}`;
+            safetyIcon.innerText = isSafe ? "🛡️" : "⚠️";
+            safetyTitle.innerText = isSafe ? "FULLY QUANTUM SAFE" : "NON-PQC COMPLIANT";
+            safetyTitle.style.color = isSafe ? "var(--success)" : "var(--danger)";
+            safetyDesc.innerText = isSafe ? 
+                "This architecture implements post-quantum pre-standardized algorithms. Protected against HNDL vectors." : 
+                "Architectural legacy detected. Highly vulnerable to 'Harvest Now, Decrypt Later' adversarial attacks.";
+
+            // Inventory List
+            const inventoryBody = document.getElementById('inventory-list-body');
+            if (inventoryBody) {
+                inventoryBody.innerHTML = '';
+                
+                const inventory = [
+                    { class: "TLS Infrastructure", endpoint: `${data.target}:443`, status: isSafe ? "SECURE (PQC)" : "VULNERABLE" },
+                    { class: "TLS VPN Gateway", endpoint: `vpn.${data.target}`, status: isSafe ? "SHIELDED" : "EXPOSED" },
+                    { class: "Public API Hub", endpoint: `api.${data.target}/v2`, status: isSafe ? "QUANTIZED" : "LEGACY" }
+                ];
+
+                inventory.forEach(item => {
+                    const tr = document.createElement('tr');
+                    tr.style.cursor = "pointer";
+                    tr.style.transition = "all 0.3s ease";
+                    tr.onmouseover = function() {
+                        this.style.background = "rgba(255, 255, 255, 0.05)";
+                        this.style.transform = "scale(1.01)";
+                    };
+                    tr.onmouseout = function() {
+                        this.style.background = "transparent";
+                        this.style.transform = "scale(1)";
+                    };
+                    tr.innerHTML = `
+                        <td style="padding: 1.5rem 2rem; color: #fff; font-weight: 600; font-size: 1.1rem; border-bottom: 1px solid rgba(255, 255, 255, 0.05);">${item.class}</td>
+                        <td style="padding: 1.5rem 2rem; font-family: monospace; color: var(--muted); font-size: 1rem; border-bottom: 1px solid rgba(255, 255, 255, 0.05);">${item.endpoint}</td>
+                        <td style="padding: 1.5rem 2rem; border-bottom: 1px solid rgba(255, 255, 255, 0.05);"><span class="asset-tag" style="background: ${item.status === 'VULNERABLE' || item.status === 'EXPOSED' ? 'rgba(239,68,68,0.1)' : 'rgba(16,185,129,0.1)'}; color: ${item.status === 'VULNERABLE' || item.status === 'EXPOSED' ? 'var(--danger)' : 'var(--success)'}; border: 1px solid ${item.status === 'VULNERABLE' || item.status === 'EXPOSED' ? 'var(--danger)' : 'var(--success)'};">${item.status}</span></td>
+                    `;
+                    inventoryBody.appendChild(tr);
+                });
+            }
+            
+            resultsDiv.style.display = 'block';
+            document.getElementById('dashboard-content').style.display = 'block';
+            document.getElementById('results-container').style.display = 'block';
+            document.getElementById('no-audit-placeholder').style.display = 'none';
+            document.getElementById('home-content').style.display = 'none';
+
+            if (isSafe) {
+                currentScanTarget = data.target;
+                currentScanAlg = data.inventory.signature_algorithm;
+                document.getElementById('cert-view-btn').style.display = 'block';
+            } else {
+                document.getElementById('cert-view-btn').style.display = 'none';
+            }
+
+            resultsDiv.scrollIntoView({ behavior: 'smooth' });
+
+            // ── Render Certificate Preview Card ────────────────────────────────────
+            const today = new Date();
+            const dateStr = today.toLocaleDateString('en-IN', { day:'2-digit', month:'long', year:'numeric' });
+            const validStr = new Date(today.getFullYear()+3, today.getMonth(), today.getDate()).toLocaleDateString('en-IN', { day:'2-digit', month:'long', year:'numeric' });
+            const refNo = `QS/${today.getFullYear()}/${String(Math.floor(10000+Math.random()*89999))}/${String(today.getMonth()+1).padStart(2,'0')}/${String(today.getDate()).padStart(2,'0')}`;
+            const serialNo = `CERT-PQC-${String(Math.floor(100000+Math.random()*899999))}`;
+
+            // Store cert data globally for the modal
+            window._certData = { data, isSafe, dateStr, validStr, refNo, serialNo };
+
+            const govCertEl = document.getElementById('gov-cert-container');
+            govCertEl.innerHTML = `
+                <div class="cert-preview-card">
+                    <div class="cert-preview-thumb">
+                        <div class="cert-preview-thumb-emblem">🔐</div>
+                        <div class="cert-preview-thumb-title">Certificate of<br>Cryptographic<br>Compliance</div>
+                        <div class="cert-preview-thumb-line"></div>
+                        <div class="cert-preview-thumb-status" style="color: ${isSafe ? '#1a7c4e' : '#9b1c1c'}">
+                            ${isSafe ? 'QUANTUM SAFE' : 'NON-COMPLIANT'}
+                        </div>
+                    </div>
+
+                    <div class="cert-preview-info">
+                        <div class="cert-preview-tag">📄 Official Compliance Certificate</div>
+                        <div class="cert-preview-domain">${data.target}</div>
+                        <div class="cert-preview-meta">
+                            <div class="cert-preview-meta-item">Status: <b style="color:${isSafe ? 'var(--success)' : 'var(--danger)'}">${isSafe ? '✔ PQCS Compliant' : '✘ Non-Compliant'}</b></div>
+                            <div class="cert-preview-meta-item">Ref. No: <b>${refNo}</b></div>
+                            <div class="cert-preview-meta-item">Issued: <b>${dateStr}</b></div>
+                            <div class="cert-preview-meta-item">Valid Until: <b>${validStr}</b></div>
+                            <div class="cert-preview-meta-item">Q-Score: <b>${data.q_score}/100</b></div>
+                            <div class="cert-preview-meta-item">Serial: <b>${serialNo}</b></div>
+                        </div>
+                        <button class="cert-view-btn" onclick="openGovCertModal()">
+                            📜 &nbsp;VIEW CERTIFICATE
+                        </button>
+                    </div>
+                </div>
+            `;
+
+            lucide.createIcons();
+        }
+
+        function openGovCertModal() {
+            const { data, isSafe, dateStr, validStr, refNo, serialNo } = window._certData || {};
+            if (!data) return;
+            const modal = document.getElementById('govCertModal');
+            document.getElementById('govCertModalContent').innerHTML = `
+                <div class="gov-cert" id="gov-cert-printable">
+                    <div class="gov-cert-watermark">QuantumShield</div>
+                    <div class="gov-cert-header">
+                        <div class="gov-cert-emblem">🔐</div>
+                        <div class="gov-cert-ministry">Government of India &nbsp;·&nbsp; Ministry of Electronics &amp; Information Technology</div>
+                        <div class="gov-cert-title">Certificate of Cryptographic Compliance</div>
+                        <div class="gov-cert-subtitle">Post-Quantum Security Assessment &amp; Audit Report — QuantumShield Wing</div>
+                    </div>
+                    <div class="gov-cert-ref">
+                        <span>Ref. No: <b>${refNo}</b></span>
+                        <span>Issued On: <b>${dateStr}</b></span>
+                    </div>
+                    <div class="gov-cert-body">
+                        <div class="gov-cert-to-label">This is to certify that the internet-facing domain:</div>
+                        <div class="gov-cert-domain">${data.target}</div>
+                        <p class="gov-cert-statement">
+                            has been subjected to a comprehensive <b>Post-Quantum Cryptographic (PQC) Security Audit</b>
+                            conducted by the QuantumShield Intelligence Engine under the authority of the National Cyber Security Policy Framework (NCSP).
+                            The audit covered Transport Layer Security (TLS) configuration, cryptographic algorithm resilience,
+                            Certificate Authority compliance, and exposure to <b>Harvest Now Decrypt Later (HNDL)</b> vector threats.
+                        </p>
+                        <div class="gov-cert-status-bar ${isSafe ? 'safe' : 'unsafe'}">
+                            ${isSafe
+                                ? '✔  INFRASTRUCTURE DECLARED: FULLY QUANTUM-SAFE — PQCS COMPLIANT'
+                                : '✘  INFRASTRUCTURE STATUS: NON-PQC COMPLIANT — REMEDIATION REQUIRED'}
+                        </div>
+                        <div class="gov-cert-details-grid">
+                            <div><span>TLS Protocol</span><span>${data.inventory.tls_version}</span></div>
+                            <div><span>Signature Algorithm</span><span>${data.inventory.signature_algorithm}</span></div>
+                            <div><span>Key Exchange</span><span>${data.inventory.key_exchange}</span></div>
+                            <div><span>Cipher Suite</span><span>${data.inventory.cipher_suite}</span></div>
+                            <div><span>Quantum Resilience Score</span><span>${data.q_score} / 100</span></div>
+                            <div><span>CT Log Verified</span><span>${data.forensics.ct_log_verified ? 'Yes — Verified' : 'No — Unverified'}</span></div>
+                            <div><span>CA PQC Readiness</span><span>${data.forensics.ca_pqc_readiness}</span></div>
+                            <div><span>HNDL Exposure</span><span>${data.forensics.hndl_exposure}</span></div>
+                            <div><span>Serial Number</span><span>${serialNo}</span></div>
+                            <div><span>Valid Until</span><span>${validStr}</span></div>
+                        </div>
+                        <div class="gov-cert-signatories">
+                            <div class="gov-cert-sig">
+                                <div class="gov-cert-sig-line"></div>
+                                <div class="gov-cert-sig-name">Authorised Signatory</div>
+                                <div class="gov-cert-sig-title">Chief Information Security Officer<br>QuantumShield Audit Division</div>
+                            </div>
+                            <div class="gov-cert-seal">
+                                <div>🏛️</div>
+                                <div style="margin-top:0.3rem;">Official<br>Seal<br>CERT-IN</div>
+                            </div>
+                            <div class="gov-cert-sig">
+                                <div class="gov-cert-sig-line"></div>
+                                <div class="gov-cert-sig-name">Audit Registrar</div>
+                                <div class="gov-cert-sig-title">Post-Quantum Cryptography Wing<br>Ministry of Electronics &amp; IT</div>
+                            </div>
+                        </div>
+                        <div class="gov-cert-footer-note">
+                            This certificate is electronically generated and valid without physical signature as per the Information Technology Act, 2000.
+                            Verify authenticity at: <b>quantumshield.in/verify/${serialNo}</b>
+                        </div>
+                    </div>
+                </div>
+                <div style="display:flex; gap:1rem; margin-top:1.5rem;">
+                    <button onclick="window.print()" style="flex:1; background:rgba(255,255,255,0.08); color:var(--primary); border:1px solid var(--primary); font-size:0.85rem; padding:0.75rem; border-radius:8px; cursor:pointer;">🖨️ &nbsp;PRINT</button>
+                    <button onclick="saveToDigiLocker()" style="flex:1; background:rgba(0,100,200,0.15); color:#60a5fa; border:1px solid #3b82f6; font-size:0.85rem; padding:0.75rem; border-radius:8px; cursor:pointer;">
+                        <img src="https://www.digilocker.gov.in/assets/img/digilocker_logo.png" style="height:13px; filter:brightness(0) invert(1); vertical-align:middle; margin-right:5px;">SAVE TO DIGILOCKER
+                    </button>
+                </div>
+            `;
+            modal.style.display = 'flex';
+        }
+
+        function closeGovCertModal() {
+            document.getElementById('govCertModal').style.display = 'none';
+        }
+
+        async function handleGoogleAuth() {
+            const btn = document.querySelector('.google-btn');
+            const originalText = btn.innerHTML;
+            btn.innerHTML = `<svg style="width:18px;height:18px;animation:spin 2s linear infinite" viewBox="0 0 24 24"><path fill="currentColor" d="M12,4V2A10,10 0 0,0 2,12H4A8,8 0 0,1 12,4Z"/></svg> CONNECTING TO GOOGLE...`;
+            btn.disabled = true;
+
+            setTimeout(() => {
+                const email = prompt("Google Sign-In: Enter your Google Email:");
+                if(email && email.includes('@')) {
+                    document.getElementById('auth-email').value = email;
+                    enterDashboard();
+                } else {
+                    btn.innerHTML = originalText;
+                    btn.disabled = false;
+                    if(email !== null) alert("Please enter a valid Google account email.");
+                }
+            }, 1000);
+        }
+
+        function toggleAuthMode() {
+            const title = document.querySelector('.auth-card h2');
+            const btn = document.querySelector('.auth-btn');
+            const toggleLink = document.getElementById('auth-toggle-link');
+            const footerText = document.querySelector('.auth-footer');
+            
+            if(title.innerText === "SIGN IN") {
+                title.innerText = "CREATE ACCOUNT";
+                btn.innerText = "SIGN UP";
+                toggleLink.innerText = "Login here";
+                footerText.innerHTML = `Already have an account? <a href="#" onclick="toggleAuthMode()" id="auth-toggle-link" style="text-decoration: underline;">Login here</a>`;
+            } else {
+                title.innerText = "SIGN IN";
+                btn.innerText = "SIGN IN";
+                footerText.innerHTML = `New to QuantumShield? <a href="#" onclick="toggleAuthMode()" id="auth-toggle-link" style="text-decoration: underline;">Signup now</a>`;
+            }
+        }
+
+        async function handleDigiLockerAuth() {
+            const dlBtn = document.querySelector('.partner-btn.dl');
+            if(!dlBtn) return;
+            const originalText = dlBtn.innerHTML;
+            dlBtn.innerHTML = `<img src="https://www.digilocker.gov.in/assets/img/digilocker_logo.png" style="background: white; padding: 2px; border-radius: 4px; width: 24px; height: 24px;" alt="DL"> CONNECTING...`;
+            dlBtn.disabled = true;
+
+            setTimeout(() => {
+                const name = prompt("DigiLocker KYC: Please confirm your full name for verification:");
+                if(name) {
+                    document.getElementById('nav-user-name').innerText = name.toUpperCase();
+                    document.getElementById('nav-user-avatar').src = `https://ui-avatars.com/api/?name=${name}&background=00f2ff&color=020617`;
+                    enterDashboard();
+                } else {
+                    dlBtn.innerHTML = originalText;
+                    dlBtn.disabled = false;
+                    alert("DigiLocker verification cancelled.");
+                }
+            }, 1500);
+        }
+
+        function saveToDigiLocker() {
+            const btn = event.currentTarget;
+            const originalText = btn.innerHTML;
+            btn.innerHTML = "SYNCING WITH VAULT...";
+            btn.style.opacity = "0.7";
+            
+            setTimeout(() => {
+                btn.innerHTML = "✓ SAVED TO DIGILOCKER";
+                btn.style.background = "var(--success)";
+                alert("Security Certificate has been securely vaulted in your DigiLocker account.");
+            }, 2000);
+        }
+
+        function enterDashboard() {
+            const email = document.getElementById('auth-email').value;
+            let name = "RISZSEASXH";
+            if(email && !email.includes('example.email')) {
+                name = email.split('@')[0].toUpperCase();
+            }
+            document.getElementById('nav-user-name').innerText = name;
+            document.getElementById('nav-user-avatar').src = `https://ui-avatars.com/api/?name=${name}&background=00f2ff&color=020617`;
+
+            document.getElementById('auth-root').style.display = 'none';
+            document.getElementById('dashboard-root').style.display = 'block';
+            document.body.style.overflow = 'auto';
+            
+            // Scroll handler removed to keep nav bar static
+            window.onscroll = null;
+
+            if(window.particlesJS) {
+                particlesJS("particles-js", {
+                    "particles": {
+                        "number": { "value": 50, "density": { "enable": true, "value_area": 800 } },
+                        "color": { "value": "#00f2ff" },
+                        "shape": { "type": "circle" },
+                        "opacity": { "value": 0.2, "random": true },
+                        "size": { "value": 2, "random": true },
+                        "line_linked": { "enable": true, "distance": 150, "color": "#00f2ff", "opacity": 0.1, "width": 1 },
+                        "move": { "enable": true, "speed": 0.8, "direction": "none", "random": true, "straight": false, "out_mode": "out" }
+                    },
+                    "interactivity": {
+                        "events": { "onhover": { "enable": true, "mode": "grab" }, "onclick": { "enable": true, "mode": "push" } }
+                    }
+                });
+            }
+        }
+
+        function handleAuth() {
+            const email = document.getElementById('auth-email').value;
+            const pass = document.getElementById('auth-pass').value;
+            const strongRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*[!@#$%^&*(),.?":{}|<>])/;
+            
+            if(!email || !pass) {
+                alert("PLEASE ENTER VALID CREDENTIALS TO ACCESS QUANTUMSHIELD GATEWAY.");
+                return;
+            }
+
+            if(!strongRegex.test(pass)) {
+                alert("YOUR PASSWORD MUST BE STRONG: INCLUDE CAPITAL LETTERS, SMALL LETTERS, AND SYMBOLS.");
+                return;
+            }
+
+            const btn = document.querySelector('.auth-btn');
+            btn.innerText = "AUTHENTICATING...";
+            btn.disabled = true;
+            
+            setTimeout(() => {
+                enterDashboard();
+            }, 1000);
+        }
+
+        function handleOTPLogin() {
+            const email = document.getElementById('auth-email').value;
+            if(!email) {
+                alert("PLEASE ENTER YOUR EMAIL TO RECEIVE AN OTP.");
+                return;
+            }
+            const btn = document.querySelector('.auth-btn-secondary');
+            btn.innerText = "SENDING OTP...";
+            setTimeout(() => {
+                const otp = prompt("ENTER THE 6-DIGIT OTP SENT TO YOUR EMAIL:");
+                if(otp && otp.length === 6) {
+                    enterDashboard();
+                } else {
+                    btn.innerText = "LOGIN WITH OTP";
+                }
+            }, 1000);
+        }
+
+        function handleLogout() {
+            if(confirm("ARE YOU SURE YOU WANT TO TERMINATE THIS SECURE SESSION?")) {
+                document.getElementById('dashboard-root').style.display = 'none';
+                document.getElementById('auth-root').style.display = 'flex';
+                document.body.style.overflow = 'hidden';
+                // Reset auth fields
+                document.getElementById('auth-email').value = '';
+                document.getElementById('auth-pass').value = '';
+                const btn = document.querySelector('.auth-btn');
+                btn.innerText = "SIGN IN";
+                btn.disabled = false;
+                window.scrollTo({top: 0});
+            }
+        }
+
+        let botInitialized = false;
+        let botScene, botCamera, botRenderer, botMesh;
+
+        function toggleHelpDesk() {
+            const modal = document.getElementById('helpDeskModal');
+            const isVisible = modal.style.display === 'flex';
+            modal.style.display = isVisible ? 'none' : 'flex';
+            
+            if (!isVisible && !botInitialized) {
+                initHelpBot();
+                botInitialized = true;
+            }
+        }
+
+        function showHelpDesk() {
+            toggleHelpDesk();
+        }
+
+        function initHelpBot() {
+            const container = document.getElementById('bot-canvas-container');
+            const width = container.clientWidth;
+            const height = container.clientHeight;
+
+            botScene = new THREE.Scene();
+            botCamera = new THREE.PerspectiveCamera(75, width / height, 0.1, 1000);
+            botRenderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+            botRenderer.setSize(width, height);
+            container.appendChild(botRenderer.domElement);
+
+            // Create a complex "Neural Core" 3D model
+            const geometry = new THREE.IcosahedronGeometry(2, 2);
+            const material = new THREE.MeshPhongMaterial({
+                color: 0x00f2ff,
+                wireframe: true,
+                transparent: true,
+                opacity: 0.8,
+                emissive: 0x00f2ff,
+                emissiveIntensity: 0.5
+            });
+            botMesh = new THREE.Mesh(geometry, material);
+            botScene.add(botMesh);
+
+            // Add an inner glowing sphere
+            const coreGeom = new THREE.SphereGeometry(1, 32, 32);
+            const coreMat = new THREE.MeshPhongMaterial({
+                color: 0xffffff,
+                transparent: true,
+                opacity: 0.2,
+                emissive: 0x00f2ff
+            });
+            const core = new THREE.Mesh(coreGeom, coreMat);
+            botScene.add(core);
+
+            // Ring around the bot
+            const ringGeom = new THREE.TorusGeometry(3, 0.05, 16, 100);
+            const ringMat = new THREE.MeshBasicMaterial({ color: 0x00f2ff, transparent: true, opacity: 0.3 });
+            const ring = new THREE.Mesh(ringGeom, ringMat);
+            ring.rotation.x = Math.PI / 2;
+            botScene.add(ring);
+
+            const light = new THREE.PointLight(0x00f2ff, 2, 100);
+            light.position.set(5, 5, 5);
+            botScene.add(light);
+            botScene.add(new THREE.AmbientLight(0x404040, 2));
+
+            botCamera.position.z = 8;
+
+            function animate() {
+                requestAnimationFrame(animate);
+                botMesh.rotation.x += 0.01;
+                botMesh.rotation.y += 0.01;
+                ring.rotation.z += 0.005;
+                
+                // Floating effect
+                const time = Date.now() * 0.001;
+                botMesh.position.y = Math.sin(time) * 0.3;
+                core.position.y = Math.sin(time) * 0.3;
+                
+                botRenderer.render(botScene, botCamera);
+            }
+            animate();
+
+            window.addEventListener('resize', () => {
+                if(botRenderer) {
+                    const w = container.clientWidth;
+                    const h = container.clientHeight;
+                    botRenderer.setSize(w, h);
+                    botCamera.aspect = w / h;
+                    botCamera.updateProjectionMatrix();
+                }
+            });
+        }
+
+        const botKnowledge = {
+            "q-score": "The Quantum Resilience Score (Q-Score) is a holistic metric (0-100) that evaluates your infrastructure's readiness for the Y2Q (Year-to-Quantum) event. It analyzes protocol hygiene, key lengths, and the presence of Post-Quantum algorithms like ML-KEM.",
+            "hndl": "HNDL stands for 'Harvest Now, Decrypt Later'. It's a strategy where adversaries capture encrypted traffic today to decrypt it once cryptographically relevant quantum computers (CRQCs) become available. Our Shielding logic mitigates this by using PQC tunnels.",
+            "cbom": "A Cryptographic Bill of Materials (CBOM) is an inventory of all cryptographic assets, protocols, and certificates used in an application. It's critical for 'Cryptographic Agility' moving into the quantum era.",
+            "scan": "Simply enter your domain endpoint on the Home page and hit 'INITIATE AUDIT'. Our neural engine will perform a non-invasive cryptographic discovery and vulnerability assessment.",
+            "fix": "To improve your score, you should migrate to TLS 1.3, use stronger curves (like X448 or P-384), and implement Hybrid Post-Quantum Key Exchange where supported by your cloud provider.",
+            "certificate": "We issue an 'Official Certificate of Cryptographic Compliance' for all infrastructures that meet our PQC-Ready standards. These are verified against CERT-IN and NCSP frameworks.",
+            "status": "Scanning Global Nodes... Intelligence Engine is CURRENTLY ONLINE. All systems are operating within quantum-safe parameters."
+        };
+
+        function sendHelpMessage() {
+            const input = document.getElementById('help-chat-input');
+            const messages = document.getElementById('help-chat-messages');
+            const text = input.value.trim();
+            if (!text) return;
+
+            // Add user message
+            const userDiv = document.createElement('div');
+            userDiv.className = 'message user';
+            userDiv.innerText = text;
+            messages.appendChild(userDiv);
+            input.value = '';
+            messages.scrollTop = messages.scrollHeight;
+
+            // Thinking indicator
+            const indicator = document.getElementById('bot-typing-indicator');
+            indicator.style.display = 'block';
+
+            setTimeout(() => {
+                indicator.style.display = 'none';
+                let response = "I've analyzed your query against my cryptographic database. While I am still learning, I recommend auditing your endpoint for ML-KEM compatibility for the best protection.";
+                
+                const lowerText = text.toLowerCase();
+                if (lowerText.includes('q-score') || lowerText.includes('score')) response = botKnowledge["q-score"];
+                else if (lowerText.includes('hndl') || lowerText.includes('harvest')) response = botKnowledge["hndl"];
+                else if (lowerText.includes('cbom') || lowerText.includes('materials')) response = botKnowledge["cbom"];
+                else if (lowerText.includes('how') && (lowerText.includes('scan') || lowerText.includes('audit'))) response = botKnowledge["scan"];
+                else if (lowerText.includes('improve') || lowerText.includes('fix') || lowerText.includes('increase')) response = botKnowledge["fix"];
+                else if (lowerText.includes('cert')) response = botKnowledge["certificate"];
+                else if (lowerText.includes('status') || lowerText.includes('server') || lowerText.includes('online')) response = botKnowledge["status"];
+
+                const botDiv = document.createElement('div');
+                botDiv.className = 'message bot';
+                botDiv.innerText = response;
+                messages.appendChild(botDiv);
+                messages.scrollTop = messages.scrollHeight;
+                
+                // Pulse the bot on response
+                if(botMesh) {
+                    botMesh.scale.set(1.5, 1.5, 1.5);
+                    setTimeout(() => botMesh.scale.set(1, 1, 1), 300);
+                }
+            }, 800 + Math.random() * 700);
+        }
+
+        // Script End
+    </script>
+    </div>
+
+    <!-- Government Certificate Modal -->
+    <div id="govCertModal" class="gov-cert-modal" onclick="if(event.target===this) closeGovCertModal()">
+        <div class="gov-cert-modal-close" onclick="closeGovCertModal()">✕</div>
+        <div class="gov-cert-modal-inner">
+            <div id="govCertModalContent"></div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js"></script>
+    <script>
+        // ── Cursor Glow Follower ─────────────────────────────────────────────────
+        const cursorGlow = document.createElement('div');
+        cursorGlow.style.cssText = `
+            position: fixed; pointer-events: none; z-index: 99999;
+            width: 300px; height: 300px;
+            background: radial-gradient(circle, rgba(0,242,255,0.12) 0%, transparent 70%);
+            border-radius: 50%;
+            transform: translate(-50%, -50%);
+            transition: left 0.08s ease, top 0.08s ease;
+            mix-blend-mode: screen;
+        `;
+        document.body.appendChild(cursorGlow);
+        document.addEventListener('mousemove', e => {
+            cursorGlow.style.left = e.clientX + 'px';
+            cursorGlow.style.top = e.clientY + 'px';
+
+            // ── 3D cursor-tilt for .nav-link buttons ─────────────────────────
+            document.querySelectorAll('.nav-link, .user-nav-profile').forEach(el => {
+                const rect = el.getBoundingClientRect();
+                const cx = rect.left + rect.width / 2;
+                const cy = rect.top + rect.height / 2;
+                const dx = (e.clientX - cx) / rect.width;
+                const dy = (e.clientY - cy) / rect.height;
+                const dist = Math.sqrt(dx * dx + dy * dy);
+
+                if (dist < 2) {
+                    const rotX = -dy * 14;
+                    const rotY = dx * 14;
+                    el.style.transform = `perspective(400px) rotateX(${rotX}deg) rotateY(${rotY}deg) scale(1.06)`;
+                    el.style.boxShadow = `0 10px 30px rgba(0, 242, 255, 0.2), 0 0 15px rgba(0, 242, 255, 0.1)`;
+                } else {
+                    el.style.transform = '';
+                    el.style.boxShadow = '';
+                }
+            });
+        });
+
+        // ── Init AOS 3D Scrolling
+        AOS.init({
+            duration: 800,
+            once: true,
+            offset: 100
+        });
+
+        // Initialize 3D Vanta NET Background (Highly mouse-interactive)
+        VANTA.NET({
+            el: "#vanta-bg",
+            mouseControls: true,
+            touchControls: true,
+            gyroControls: true,
+            minHeight: 200.00,
+            minWidth: 200.00,
+            scale: 1.00,
+            scaleMobile: 1.00,
+            color: 0x00f2ff,
+            backgroundColor: 0x010308,
+            points: 12.00,
+            maxDistance: 22.00,
+            spacing: 18.00,
+            showDots: true
+        });
+        
+        // Initial particles for the background (visible through glass overlay)
+        particlesJS("particles-js", {
+            "particles": {
+                "number": { "value": 50, "density": { "enable": true, "value_area": 800 } },
+                "color": { "value": "#00f2ff" },
+                "shape": { "type": "circle" },
+                "opacity": { "value": 0.2, "random": true },
+                "size": { "value": 2, "random": true },
+                "line_linked": { "enable": true, "distance": 150, "color": "#00f2ff", "opacity": 0.1, "width": 1 },
+                "move": { "enable": true, "speed": 0.8, "direction": "none", "random": true, "straight": false, "out_mode": "out" }
+            },
+            "interactivity": {
+                "events": { "onhover": { "enable": true, "mode": "grab" }, "onclick": { "enable": true, "mode": "push" } }
+            }
+        });
+        // Initialize Lucide Icons
+        function showHome() {
+            document.getElementById('home-content').style.display = 'block';
+            document.getElementById('dashboard-content').style.display = 'none';
+            window.scrollTo({top: 0, behavior: 'smooth'});
+        }
+
+        function showDashboard() {
+            document.getElementById('home-content').style.display = 'none';
+            document.getElementById('dashboard-content').style.display = 'block';
+            // Show placeholder if no scan has run yet
+            const results = document.getElementById('results').innerHTML;
+            if(!results || results.trim() === "") {
+                document.getElementById('no-audit-placeholder').style.display = 'block';
+                document.getElementById('results-container').style.display = 'none';
+            } else {
+                document.getElementById('no-audit-placeholder').style.display = 'none';
+                document.getElementById('results-container').style.display = 'block';
+            }
+            window.scrollTo({top: 0, behavior: 'smooth'});
+        }
+
+        lucide.createIcons();
+        
+        // Ensure body is not scrollable while on auth screen
+        if(document.getElementById('auth-root').style.display !== 'none') {
+            document.body.style.overflow = 'hidden';
+        }
+    </script>
+</body>
+</html>
