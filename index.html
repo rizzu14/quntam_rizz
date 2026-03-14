@@ -2182,6 +2182,7 @@
                     </div>
 
                     <div class="loader" id="loader"></div>
+                    <div id="inline-scan-error" style="display:none;"></div>
                     <div id="error" class="error-msg"></div>
                 </main>
             </div>
@@ -2713,6 +2714,7 @@
 
             console.log(`Sanitized Target: ${target}`);
             resultsDiv.style.display = 'none';
+            clearInlineError();
 
             // 1. STRICT INPUT VERIFICATION (on the sanitized hostname)
             if (!target || !isValidEndpoint(target)) {
@@ -2723,8 +2725,7 @@
                     : 'Target must be a valid domain (e.g., bank.com) or IP address.';
                 showError(`INVALID ENDPOINT: ${tldMsg}`);
                 return;
-            }
-            
+            }            
             targetInput.style.borderColor = 'var(--primary)';
             loader.style.display = 'block';
 
@@ -2778,15 +2779,24 @@
         }
 
         function showError(msg) {
-            const resultsDiv = document.getElementById('results');
-            resultsDiv.innerHTML = `
-                <div style="padding: 2.5rem; background: rgba(239, 68, 68, 0.05); border: 1px dashed var(--danger); border-radius: 16px; text-align: center;">
-                    <div style="font-size: 2rem; margin-bottom: 1rem;">⚠️</div>
-                    <h3 style="color: var(--danger); margin-bottom: 0.5rem; text-transform: uppercase; letter-spacing: 1px;">Security Verification Failed</h3>
-                    <p style="color: var(--muted); max-width: 400px; margin: 0 auto;">${msg}</p>
-                </div>
-            `;
-            resultsDiv.style.display = 'block';
+            // Show error inline inside the scanner card, not in the dashboard
+            const errorEl = document.getElementById('inline-scan-error');
+            if (errorEl) {
+                errorEl.innerHTML = `
+                    <div style="display:flex; align-items:flex-start; gap:1rem; padding: 1rem 1.25rem; background: rgba(239,68,68,0.07); border: 1px solid rgba(239,68,68,0.4); border-radius: 12px; margin-top: 1rem;">
+                        <span style="font-size:1.4rem; line-height:1;">⚠️</span>
+                        <div>
+                            <div style="color: var(--danger); font-weight: 700; font-size: 0.85rem; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 0.25rem;">Invalid Endpoint</div>
+                            <div style="color: var(--muted); font-size: 0.9rem;">${msg}</div>
+                        </div>
+                    </div>`;
+                errorEl.style.display = 'block';
+            }
+        }
+
+        function clearInlineError() {
+            const errorEl = document.getElementById('inline-scan-error');
+            if (errorEl) { errorEl.innerHTML = ''; errorEl.style.display = 'none'; }
         }
         function simulateScan(target) {
             // Helper to generate a deterministic pseudo-random seed from string
