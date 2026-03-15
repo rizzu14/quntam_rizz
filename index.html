@@ -1950,19 +1950,23 @@
             border-radius: 50%;
         }
 
+        /* Hide brand on desktop */
+        .top-nav-brand { display: none; }
+
         @media (max-width: 768px) {
             .top-nav .nav-link,
             .top-nav .nav-divider,
             .top-nav .user-nav-profile {
-                display: none;
+                display: none !important;
             }
-            .hamburger { display: flex; }
+            .hamburger { display: flex !important; }
             .top-nav {
-                padding: 0.55rem 1.2rem;
+                padding: 0.55rem 1.2rem !important;
                 justify-content: space-between;
+                overflow: hidden !important;
             }
             .top-nav-brand {
-                display: flex;
+                display: flex !important;
                 align-items: center;
                 gap: 0.5rem;
                 color: var(--primary);
