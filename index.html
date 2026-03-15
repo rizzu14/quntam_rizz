@@ -352,7 +352,7 @@
         /* PREMIUM TOP NAVIGATION */
         .top-nav-wrapper {
             position: fixed;
-            top: 0;
+            top: 32px; /* sits just below the threat ticker */
             left: 0;
             width: 100%;
             display: flex;
@@ -365,17 +365,17 @@
             pointer-events: auto;
             display: flex;
             align-items: center;
-            gap: 2.5rem;
+            gap: 1.5rem;
             width: 100%;
-            background: rgba(5, 10, 20, 0.85);
+            background: rgba(5, 10, 20, 0.9);
             backdrop-filter: blur(25px) saturate(200%);
-            padding: 0.9rem 3rem;
+            padding: 0.55rem 2rem;
             border-radius: 0;
             border: none;
             border-bottom: 1px solid rgba(0, 242, 255, 0.2);
             box-shadow: 
-                0 4px 30px rgba(0, 0, 0, 0.5),
-                0 0 15px rgba(0, 242, 255, 0.05);
+                0 4px 20px rgba(0, 0, 0, 0.5),
+                0 0 10px rgba(0, 242, 255, 0.05);
             position: relative;
             overflow: hidden;
             transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
@@ -384,8 +384,8 @@
         .top-nav:hover {
             border-bottom-color: rgba(0, 242, 255, 0.4);
             box-shadow: 
-                0 6px 35px rgba(0, 0, 0, 0.6),
-                0 0 20px rgba(0, 242, 255, 0.1);
+                0 6px 25px rgba(0, 0, 0, 0.6),
+                0 0 15px rgba(0, 242, 255, 0.1);
         }
 
         .top-nav::before {
@@ -411,9 +411,9 @@
         .nav-link {
             text-decoration: none;
             color: var(--text);
-            font-size: 0.75rem;
+            font-size: 0.65rem;
             font-weight: 800;
-            letter-spacing: 2px;
+            letter-spacing: 1.5px;
             text-transform: uppercase;
             cursor: pointer;
             transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
@@ -440,7 +440,7 @@
         }
 
         .nav-link i {
-            font-size: 1rem;
+            font-size: 0.85rem;
         }
 
         .nav-divider {
@@ -1993,25 +1993,25 @@
     <div id="particles-js"></div>
     <div class="ambient-light"></div>
 
-    <div class="top-nav-wrapper" style="position:fixed;top:0;left:0;width:100%;z-index:5000;">
-        <nav class="top-nav" style="width:100%;border-radius:0;border:none;border-bottom:1px solid rgba(0,242,255,0.2);padding:0.9rem 3rem;">
+    <div class="top-nav-wrapper" style="position:fixed;top:32px;left:0;width:100%;z-index:5000;">
+        <nav class="top-nav" style="width:100%;border-radius:0;border:none;border-bottom:1px solid rgba(0,242,255,0.2);padding:0.55rem 2rem;">
             <div class="nav-link" onclick="showHome()">
-                <i data-lucide="home" style="width: 18px; height: 18px;"></i>
+                <i data-lucide="home" style="width: 14px; height: 14px;"></i>
                 <span>HOME</span>
             </div>
             <div class="nav-divider"></div>
             <div class="nav-link" onclick="showDashboard()">
-                <i data-lucide="layout-dashboard" style="width: 18px; height: 18px;"></i>
+                <i data-lucide="layout-dashboard" style="width: 14px; height: 14px;"></i>
                 <span>DASHBOARD</span>
             </div>
             <div class="nav-divider"></div>
             <div class="nav-link" onclick="toggleHistory()">
-                <i data-lucide="history" style="width: 18px; height: 18px;"></i>
+                <i data-lucide="history" style="width: 14px; height: 14px;"></i>
                 <span>HISTORY</span>
             </div>
             <div class="nav-divider"></div>
             <div class="nav-link">
-                <i data-lucide="languages" style="width: 18px; height: 18px; color: var(--primary);"></i>
+                <i data-lucide="languages" style="width: 14px; height: 14px; color: var(--primary);"></i>
                 <select class="top-lang-selector" onchange="changeLanguage(this.value)">
                     <option value="en">LANGUAGE: EN</option>
                     <option value="hi">LANGUAGE: HI</option>
@@ -2023,12 +2023,12 @@
             </div>
             <div class="nav-divider"></div>
             <div class="nav-link" onclick="toggleHelpDesk()">
-                <i data-lucide="help-circle" style="width: 18px; height: 18px; color: var(--warning);"></i>
+                <i data-lucide="help-circle" style="width: 14px; height: 14px; color: var(--warning);"></i>
                 <span style="color: var(--warning);">EXPLORE AI HELP</span>
             </div>
             <div class="nav-divider"></div>
             <div class="nav-link" onclick="handleLogout()">
-                <i data-lucide="log-out" style="width: 18px; height: 18px; color: var(--danger);"></i>
+                <i data-lucide="log-out" style="width: 14px; height: 14px; color: var(--danger);"></i>
                 <span style="color: var(--danger);">LOGOUT</span>
             </div>
             <div class="user-nav-profile" onclick="toggleProfile()" style="cursor: pointer;">
