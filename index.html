@@ -2092,7 +2092,7 @@
     <div id="particles-js"></div>
     <div class="ambient-light"></div>
 
-    <div id="main-navbar" style="position:fixed;top:0;left:0;width:100%;z-index:9998;pointer-events:none;transition:transform 0.3s ease;">
+    <div id="main-navbar" style="position:absolute;top:0;left:0;width:100%;z-index:9998;pointer-events:none;">
         <div class="threat-ticker" style="position:relative;top:auto;left:auto;width:100%;pointer-events:auto;">
             <div style="background: var(--danger); color: white; padding: 2px 8px; margin-right: 15px; font-weight: bold; flex-shrink:0;" data-i18n="threat_feed_live">LIVE THREAT FEED</div>
             <div class="ticker-scroll" id="threat-ticker-text">
@@ -3788,16 +3788,6 @@
         });
         function openMobileMenu() { document.getElementById('mobileMenu').classList.add('open'); }
         function closeMobileMenu() { document.getElementById('mobileMenu').classList.remove('open'); }
-
-        // Hide navbar when scrolling, show only at top
-        const navbar = document.getElementById('main-navbar');
-        window.addEventListener('scroll', () => {
-            if (window.scrollY > 10) {
-                navbar.style.transform = 'translateY(-100%)';
-            } else {
-                navbar.style.transform = 'translateY(0)';
-            }
-        }, { passive: true });
 
         // Initialize Lucide Icons
         function showHome() {
