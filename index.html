@@ -378,42 +378,21 @@
             border-radius: 0;
             border: none;
             border-bottom: 1px solid rgba(0, 242, 255, 0.2);
-            box-shadow: 
-                0 4px 20px rgba(0, 0, 0, 0.5),
-                0 0 10px rgba(0, 242, 255, 0.05);
-            position: relative;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+            position: static;
             overflow: hidden;
             white-space: nowrap;
             flex-wrap: nowrap;
-            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            transform: none !important;
+            transition: none;
         }
 
         .top-nav:hover {
             border-bottom-color: rgba(0, 242, 255, 0.4);
-            box-shadow: 
-                0 6px 25px rgba(0, 0, 0, 0.6),
-                0 0 15px rgba(0, 242, 255, 0.1);
         }
 
-        .top-nav::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: -100%;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(
-                90deg,
-                transparent,
-                rgba(0, 242, 255, 0.05),
-                transparent
-            );
-            transition: 0.5s;
-        }
-
-        .top-nav:hover::before {
-            left: 100%;
-        }
+        .top-nav::before { display: none; }
+        .top-nav:hover::before { display: none; }
 
         .nav-link {
             text-decoration: none;
@@ -2108,8 +2087,8 @@
     <div id="particles-js"></div>
     <div class="ambient-light"></div>
 
-    <div class="top-nav-wrapper" style="position:fixed;top:32px;left:0;width:100%;z-index:5000;">
-        <nav class="top-nav" style="width:100%;border-radius:0;border:none;border-bottom:1px solid rgba(0,242,255,0.2);padding:0.55rem 2rem;overflow:hidden;">
+    <div class="top-nav-wrapper" style="position:fixed !important;top:34px !important;left:0 !important;width:100% !important;z-index:4999 !important;transform:none !important;">
+        <nav class="top-nav" style="width:100%;border-radius:0;border:none;border-bottom:1px solid rgba(0,242,255,0.2);padding:0.55rem 2rem;overflow:hidden;position:static !important;transform:none !important;">
             <div class="top-nav-brand">⚛ QUANTUMSHIELD</div>
             <div class="nav-link" onclick="showHome()">
                 <i data-lucide="home" style="width: 14px; height: 14px;"></i>
