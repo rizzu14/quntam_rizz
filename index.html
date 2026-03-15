@@ -1889,6 +1889,109 @@
 
         .partner-btn.dl { color: #fff !important; }
         .partner-btn.google { color: #fff !important; }
+
+        /* ===== MOBILE RESPONSIVE ===== */
+        .hamburger {
+            display: none;
+            flex-direction: column;
+            gap: 5px;
+            cursor: pointer;
+            padding: 0.4rem;
+            margin-left: auto;
+        }
+        .hamburger span {
+            display: block;
+            width: 22px;
+            height: 2px;
+            background: var(--primary);
+            border-radius: 2px;
+            transition: 0.3s;
+        }
+        .mobile-nav-menu {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(5, 10, 20, 0.97);
+            backdrop-filter: blur(20px);
+            z-index: 9999;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 2rem;
+        }
+        .mobile-nav-menu.open { display: flex; }
+        .mobile-nav-menu .nav-link {
+            font-size: 1.1rem;
+            letter-spacing: 2px;
+            padding: 1rem 2rem;
+            border: 1px solid rgba(0,242,255,0.15);
+            border-radius: 12px;
+            width: 80%;
+            justify-content: center;
+        }
+        .mobile-nav-close {
+            position: absolute;
+            top: 1.5rem;
+            right: 1.5rem;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: var(--muted);
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: rgba(255,255,255,0.05);
+            border-radius: 50%;
+        }
+
+        @media (max-width: 768px) {
+            .top-nav .nav-link,
+            .top-nav .nav-divider,
+            .top-nav .user-nav-profile {
+                display: none;
+            }
+            .hamburger { display: flex; }
+            .top-nav {
+                padding: 0.55rem 1.2rem;
+                justify-content: space-between;
+            }
+            .top-nav-brand {
+                display: flex;
+                align-items: center;
+                gap: 0.5rem;
+                color: var(--primary);
+                font-weight: 800;
+                font-size: 0.85rem;
+                letter-spacing: 2px;
+            }
+            h1 { font-size: 2rem; }
+            p.subtitle { font-size: 1rem; }
+            .container { padding: 1rem; }
+            #home-content .container { padding-top: 90px !important; }
+            #dashboard-content { padding-top: 90px !important; }
+            .input-group { flex-direction: column; }
+            .input-group input { width: 100%; }
+            .input-group button { width: 100%; }
+            .scanner-card { padding: 1.5rem; }
+            .result-grid { grid-template-columns: 1fr; }
+            .innovation-container { flex-direction: column; }
+            .feature-grid { grid-template-columns: 1fr 1fr; }
+            .cert-preview-card { flex-direction: column; }
+            .help-desk-container { flex-direction: column; height: 95vh; }
+            .help-bot-viewport { display: none; }
+            .history-grid { grid-template-columns: 1fr; }
+            .threat-ticker { font-size: 0.65rem; }
+        }
+
+        @media (max-width: 480px) {
+            h1 { font-size: 1.6rem; }
+            .feature-grid { grid-template-columns: 1fr; }
+            .cert-preview-meta { grid-template-columns: 1fr; }
+        }
     </style>
 </head>
 <body style="background: #050a14;">
@@ -1995,6 +2098,7 @@
 
     <div class="top-nav-wrapper" style="position:fixed;top:32px;left:0;width:100%;z-index:5000;">
         <nav class="top-nav" style="width:100%;border-radius:0;border:none;border-bottom:1px solid rgba(0,242,255,0.2);padding:0.55rem 2rem;">
+            <div class="top-nav-brand">⚛ QUANTUMSHIELD</div>
             <div class="nav-link" onclick="showHome()">
                 <i data-lucide="home" style="width: 14px; height: 14px;"></i>
                 <span>HOME</span>
@@ -2035,7 +2139,43 @@
                 <img src="https://ui-avatars.com/api/?name=User&background=00f2ff&color=020617" id="nav-user-avatar" class="user-nav-avatar" alt="User">
                 <span id="nav-user-name" class="user-nav-name">RISZSEASXH</span>
             </div>
+            <!-- Hamburger for mobile -->
+            <div class="hamburger" onclick="openMobileMenu()">
+                <span></span><span></span><span></span>
+            </div>
         </nav>
+    </div>
+
+    <!-- Mobile Menu -->
+    <div class="mobile-nav-menu" id="mobileMenu">
+        <div class="mobile-nav-close" onclick="closeMobileMenu()">✕</div>
+        <div class="nav-link" onclick="showHome(); closeMobileMenu()">
+            <i data-lucide="home" style="width:16px;height:16px;"></i><span>HOME</span>
+        </div>
+        <div class="nav-link" onclick="showDashboard(); closeMobileMenu()">
+            <i data-lucide="layout-dashboard" style="width:16px;height:16px;"></i><span>DASHBOARD</span>
+        </div>
+        <div class="nav-link" onclick="toggleHistory(); closeMobileMenu()">
+            <i data-lucide="history" style="width:16px;height:16px;"></i><span>HISTORY</span>
+        </div>
+        <div class="nav-link" onclick="toggleHelpDesk(); closeMobileMenu()">
+            <i data-lucide="help-circle" style="width:16px;height:16px;color:var(--warning);"></i>
+            <span style="color:var(--warning);">AI HELP</span>
+        </div>
+        <div class="nav-link" onclick="handleLogout()">
+            <i data-lucide="log-out" style="width:16px;height:16px;color:var(--danger);"></i>
+            <span style="color:var(--danger);">LOGOUT</span>
+        </div>
+        <div style="margin-top:1rem;">
+            <select class="top-lang-selector" onchange="changeLanguage(this.value)" style="font-size:0.9rem;padding:0.5rem 1rem;border:1px solid rgba(0,242,255,0.2);border-radius:8px;">
+                <option value="en">LANGUAGE: EN</option>
+                <option value="hi">LANGUAGE: HI</option>
+                <option value="mr">LANGUAGE: MR</option>
+                <option value="bn">LANGUAGE: BN</option>
+                <option value="ar">LANGUAGE: AR</option>
+                <option value="es">LANGUAGE: ES</option>
+            </select>
+        </div>
     </div>
 
     <div id="historyPanel" class="history-panel">
@@ -3651,6 +3791,9 @@
                 "events": { "onhover": { "enable": true, "mode": "grab" }, "onclick": { "enable": true, "mode": "push" } }
             }
         });
+        function openMobileMenu() { document.getElementById('mobileMenu').classList.add('open'); }
+        function closeMobileMenu() { document.getElementById('mobileMenu').classList.remove('open'); }
+
         // Initialize Lucide Icons
         function showHome() {
             document.getElementById('home-content').style.display = 'block';
